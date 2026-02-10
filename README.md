@@ -22,18 +22,6 @@ Para adicionar uma nova aula, edite a secao `## Aulas` com a lista numerada:
 
 Se quiser, adicione o link da aula em `## Links sugeridos`.
 
-## Publicar no GitHub Pages
-
-1. Crie um repositorio no GitHub e envie estes arquivos.
-2. No GitHub, acesse `Settings` > `Pages`.
-3. Em `Build and deployment`, selecione:
-   - `Source`: `Deploy from a branch`
-   - `Branch`: `main` (ou `master`) e pasta `/ (root)`
-4. Salve e aguarde o deploy.
-5. O site ficara disponivel na URL do GitHub Pages do repositorio.
-
-## Trabalho em dupla (colaboracao)
-
 Fluxo recomendado:
 
 1. Uma pessoa cria/edita as aulas em Markdown.
