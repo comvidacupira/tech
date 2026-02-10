@@ -9,17 +9,17 @@ image: /assets/images/windows.jpg
 
 ## Aulas
 
-1. Aula 01 - O que e Windows e como navegar no sistema.
-2. Aula 02 - Como criar, mover e organizar pastas.
-3. Aula 03 - Atalhos e configuracoes uteis para o dia a dia.
+<details class="list-box" open>
+  <summary>Ver/ocultar lista de aulas</summary>
 
-## Links sugeridos
+  <ol class="course-list">
+    <li><strong>Aula 01</strong> - O que e Windows e como navegar no sistema.</li>
+    <li><strong>Aula 02</strong> - Como criar, mover e organizar pastas.</li>
+    <li><strong>Aula 03</strong> - Atalhos e configuracoes uteis para o dia a dia.</li>
+  </ol>
+</details>
 
-- Aula 01: [Conhecendo o Windows e Interface Metro](https://www.youtube.com/watch?v=IldPMbfLb1E&list=PLQQLNsOZKaFsQwNXBLQ2o3D3VqjHIDRYn)
-- Aula 02: [Adicionar link do video](https://www.youtube.com/)
-- Aula 03: [Adicionar link do video](https://www.youtube.com/)
-
-## Galeria de videos
+## Você está assistindo a aula: 
 
 <div class="video-player-box">
   <div class="video-player-frame">
