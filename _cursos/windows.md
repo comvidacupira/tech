@@ -19,15 +19,86 @@ image: /assets/images/windows.jpg
 - Aula 02: [Adicionar link do video](https://www.youtube.com/)
 - Aula 03: [Adicionar link do video](https://www.youtube.com/)
 
-## Teste de video embutido
+## Galeria de videos
 
-<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin-top:0.8rem;">
-  <iframe
-    src="https://www.youtube.com/embed/IldPMbfLb1E"
-    title="Aula 01 - Teste de video embutido"
-    style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen>
-  </iframe>
+<div class="video-gallery">
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 1 - Conhecendo o Windows" />
+    </a>
+    <h3>Aula 1</h3>
+    <p>Conhecendo o Windows.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 2 - Area de trabalho" />
+    </a>
+    <h3>Aula 2</h3>
+    <p>Explorando a area de trabalho.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 3 - Pastas e arquivos" />
+    </a>
+    <h3>Aula 3</h3>
+    <p>Como criar e organizar pastas.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 4 - Configuracoes basicas" />
+    </a>
+    <h3>Aula 4</h3>
+    <p>Configuracoes basicas do sistema.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 5 - Atalhos" />
+    </a>
+    <h3>Aula 5</h3>
+    <p>Atalhos uteis para produtividade.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 6 - Menu iniciar" />
+    </a>
+    <h3>Aula 6</h3>
+    <p>Usando o menu iniciar de forma pratica.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 7 - Pesquisa" />
+    </a>
+    <h3>Aula 7</h3>
+    <p>Pesquisa de apps, arquivos e configuracoes.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 8 - Central de notificacoes" />
+    </a>
+    <h3>Aula 8</h3>
+    <p>Central de notificacoes e ajustes rapidos.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 9 - Personalizacao" />
+    </a>
+    <h3>Aula 9</h3>
+    <p>Personalizando tema e plano de fundo.</p>
+  </article>
+
+  <article class="video-card">
+    <a href="https://www.youtube.com/watch?v=IldPMbfLb1E" target="_blank" rel="noopener noreferrer">
+      <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 10 - Revisao" />
+    </a>
+    <h3>Aula 10</h3>
+    <p>Revisao dos principais recursos do Windows.</p>
+  </article>
 </div>
-
