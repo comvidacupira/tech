@@ -34,6 +34,22 @@ body {
   padding: 1.2rem 0;
 }
 
+.header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.brand-logo {
+  width: 126px;
+  height: 126px;
+  object-fit: contain;
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
 .brand {
   display: inline-block;
   color: var(--ink);
@@ -163,4 +179,11 @@ ol li {
 
 .footer-links a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .brand-logo {
+    width: 110px;
+    height: 110px;
+  }
 }

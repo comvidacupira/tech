@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Logo Convida">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0d8a5c"/>
+      <stop offset="100%" stop-color="#124d8f"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="44" fill="url(#bg)"/>
+  <circle cx="94" cy="102" r="24" fill="#ffffff"/>
+  <circle cx="162" cy="102" r="24" fill="#ffffff"/>
+  <path d="M54 164c16-19 39-29 74-29s58 10 74 29" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+</svg>

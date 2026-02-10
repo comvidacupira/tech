@@ -14,9 +14,16 @@
   </head>
   <body>
     <header class="site-header">
-      <div class="container">
-        <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-        <p class="tagline">Comvida TECH</p>
+      <div class="container header-main">
+        <img
+          class="brand-logo"
+          src="{{ '/assets/images/comvida-logo.png' | relative_url }}"
+          alt="Logo convida"
+        />
+        <div>
+          <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+          <p class="tagline">Comvida TECH</p>
+        </div>
       </div>
     </header>
     <main class="container">{{ content }}</main>
@@ -32,7 +39,10 @@
           <h3>Cursos</h3>
           <ul class="footer-links">
             <li>
-              <a href="{{ '/cursos/hardware/' | relative_url }}">Hardware</a>
+              <a
+                href="{{ 'https://www.cursoemvideo.com/curso/hardware/' | relative_url }}"
+                >Hardware</a
+              >
             </li>
             <li>
               <a href="{{ '/cursos/windows/' | relative_url }}">Windows</a>

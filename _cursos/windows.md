@@ -6,6 +6,7 @@ summary: Uso do sistema, organizacao de arquivos e configuracoes essenciais.
 order: 2
 image: /assets/images/windows.jpg
 ---
+
 ## Aulas
 
 1. Aula 01 - O que e Windows e como navegar no sistema.
@@ -14,6 +15,6 @@ image: /assets/images/windows.jpg
 
 ## Links sugeridos
 
-- Aula 01: [Adicionar link do video](https://www.youtube.com/)
+- Aula 01: ![Conhecendo o Windows e Interface Metro](https://www.youtube.com/watch?v=IldPMbfLb1E&list=PLQQLNsOZKaFsQwNXBLQ2o3D3VqjHIDRYn)
 - Aula 02: [Adicionar link do video](https://www.youtube.com/)
 - Aula 03: [Adicionar link do video](https://www.youtube.com/)
