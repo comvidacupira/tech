@@ -12,7 +12,7 @@ image: /assets/images/windows.jpg
 <details class="list-box" open>
   <summary>Ver/ocultar lista de aulas</summary>
 
-  <ol id="course-list" class="course-list"></ol>
+  <ul id="course-list" class="course-list"></ul>
 </details>
 
 ## Você está assistindo a aula: 
@@ -29,6 +29,9 @@ image: /assets/images/windows.jpg
   </div>
   <p id="lesson-current" class="video-current">Reproduzindo: Aula 1 - Conhecendo o Windows.</p>
 </div>
+
+<h3 class="gallery-title">Galeria de aulas</h3>
+<hr class="gallery-divider" />
 
 <div class="video-gallery" id="video-gallery">
   <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 1" data-description="Conhecendo o Windows.">

@@ -219,6 +219,16 @@ ol li {
   color: var(--muted);
 }
 
+.gallery-title {
+  margin: calc(1.3rem + 20px) 0 0.4rem;
+}
+
+.gallery-divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 0 0 0.9rem;
+}
+
 .video-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -268,7 +278,8 @@ ol li {
 
 .course-list {
   margin: 0.7rem 0 0;
-  padding-left: 1.2rem;
+  padding-left: 0;
+  list-style: none;
 }
 
 .course-list li + li {
