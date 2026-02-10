@@ -1,0 +1,7 @@
+title: Curadoria de Aulas
+description: Site simples para organizar aulas de informatica por curso.
+markdown: kramdown
+collections:
+  cursos:
+    output: true
+    permalink: /cursos/:name/
