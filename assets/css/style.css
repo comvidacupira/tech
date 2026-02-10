@@ -122,3 +122,45 @@ body {
 ol li {
   margin-bottom: 0.45rem;
 }
+
+.site-footer {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+  background: linear-gradient(120deg, #eef5fd 0%, #f4fbf7 100%);
+  padding: 1.5rem 0;
+}
+
+.footer-content {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.footer-content h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.footer-content p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.footer-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-links li + li {
+  margin-top: 0.35rem;
+}
+
+.footer-links a {
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}

@@ -1,21 +1,86 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
-  <meta name="description" content="{{ site.description }}">
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
-</head>
-<body>
-  <header class="site-header">
-    <div class="container">
-      <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-      <p class="tagline">Curadoria de aulas online para estudo guiado</p>
-    </div>
-  </header>
-  <main class="container">
-    {{ content }}
-  </main>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}
+    </title>
+    <meta name="description" content="{{ site.description }}" />
+    <link
+      rel="stylesheet"
+      href="{{ '/assets/css/style.css' | relative_url }}"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+        <p class="tagline">Comvida TECH</p>
+      </div>
+    </header>
+    <main class="container">{{ content }}</main>
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <div>
+          <h3>convida</h3>
+          <p>
+            Nesta página você vai encontrar os módulos para sua aprendizagem.
+          </p>
+        </div>
+        <div>
+          <h3>Cursos</h3>
+          <ul class="footer-links">
+            <li>
+              <a href="{{ '/cursos/hardware/' | relative_url }}">Hardware</a>
+            </li>
+            <li>
+              <a href="{{ '/cursos/windows/' | relative_url }}">Windows</a>
+            </li>
+            <li><a href="{{ '/cursos/word/' | relative_url }}">Word</a></li>
+            <li>
+              <a href="{{ '/cursos/internet/' | relative_url }}">Internet</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Redes Sociais</h3>
+          <ul class="footer-links">
+            <li>
+              <a
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Instagram</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.youtube.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >YouTube</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Facebook</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.linkedin.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                >LinkedIn</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>
