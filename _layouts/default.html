@@ -13,84 +13,8 @@
     />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container header-main">
-        <img
-          class="brand-logo"
-          src="{{ '/assets/images/comvida-logo.png' | relative_url }}"
-          alt="Logo convida"
-        />
-        <div>
-          <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-          <p class="tagline">Comvida TECH</p>
-        </div>
-      </div>
-    </header>
+    {% include header.html %}
     <main class="container">{{ content }}</main>
-    <footer class="site-footer">
-      <div class="container footer-content">
-        <div>
-          <h3>convida</h3>
-          <p>
-            Nesta página você vai encontrar os módulos para sua aprendizagem.
-          </p>
-        </div>
-        <div>
-          <h3>Cursos</h3>
-          <ul class="footer-links">
-            <li>
-              <a
-                href="{{ 'https://www.cursoemvideo.com/curso/hardware/' | relative_url }}"
-                >Hardware</a
-              >
-            </li>
-            <li>
-              <a href="{{ '/cursos/windows/' | relative_url }}">Windows</a>
-            </li>
-            <li><a href="{{ '/cursos/word/' | relative_url }}">Word</a></li>
-            <li>
-              <a href="{{ '/cursos/internet/' | relative_url }}">Internet</a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3>Redes Sociais</h3>
-          <ul class="footer-links">
-            <li>
-              <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Instagram</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.youtube.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >YouTube</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.facebook.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Facebook</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.linkedin.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                >LinkedIn</a
-              >
-            </li>
-          </ul>
-        </div>
-      </div>
-    </footer>
+    {% include footer.html %}
   </body>
 </html>
