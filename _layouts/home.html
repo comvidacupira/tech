@@ -10,6 +10,13 @@ layout: default
   {% assign cursos_ordenados = site.cursos | sort: "order" %}
   {% for curso in cursos_ordenados %}
     <article class="card">
+      <div class="card-image-wrap">
+        <img
+          class="card-image"
+          src="{{ curso.image | default: '/assets/images/course-placeholder.svg' | relative_url }}"
+          alt="Imagem do curso {{ curso.course_name }}"
+          loading="lazy">
+      </div>
       <h2>{{ curso.course_name }}</h2>
       <p>{{ curso.summary }}</p>
       <a class="card-link" href="{{ curso.url | relative_url }}">Ver aulas</a>

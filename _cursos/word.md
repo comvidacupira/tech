@@ -4,7 +4,9 @@ title: Curso de Word
 course_name: Word
 summary: Criacao e formatacao de documentos para estudo e trabalho.
 order: 3
+image: /assets/images/word.jpg
 ---
+
 ## Aulas
 
 1. Aula 01 - Introducao ao Word e interface principal.

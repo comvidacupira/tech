@@ -4,6 +4,7 @@ title: Curso de Hardware
 course_name: Hardware
 summary: Fundamentos de componentes, montagem e manutenção básica.
 order: 1
+image: /assets/images/hardware.jpg
 ---
 ## Aulas
 
