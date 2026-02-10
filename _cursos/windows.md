@@ -12,11 +12,7 @@ image: /assets/images/windows.jpg
 <details class="list-box" open>
   <summary>Ver/ocultar lista de aulas</summary>
 
-  <ol class="course-list">
-    <li><strong>Aula 01</strong> - O que e Windows e como navegar no sistema.</li>
-    <li><strong>Aula 02</strong> - Como criar, mover e organizar pastas.</li>
-    <li><strong>Aula 03</strong> - Atalhos e configuracoes uteis para o dia a dia.</li>
-  </ol>
+  <ol id="course-list" class="course-list"></ol>
 </details>
 
 ## Você está assistindo a aula: 
@@ -101,6 +97,21 @@ image: /assets/images/windows.jpg
     const player = document.getElementById("lesson-player");
     const current = document.getElementById("lesson-current");
     const cards = document.querySelectorAll(".js-video-card");
+    const courseList = document.getElementById("course-list");
+
+    function buildCourseListFromCards() {
+      if (!courseList) return;
+      courseList.innerHTML = "";
+
+      cards.forEach(function (card) {
+        const title = card.dataset.title || "Aula";
+        const description = card.dataset.description || "";
+
+        const item = document.createElement("li");
+        item.innerHTML = "<strong>" + title + "</strong> - " + description;
+        courseList.appendChild(item);
+      });
+    }
 
     function playFromCard(card) {
       const videoId = card.dataset.videoId;
@@ -121,5 +132,7 @@ image: /assets/images/windows.jpg
         playFromCard(card);
       });
     });
+
+    buildCourseListFromCards();
   })();
 </script>
