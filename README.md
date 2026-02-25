@@ -59,6 +59,29 @@ Controle de permissao por role usa `publicMetadata.role` no Clerk:
 
 Para funcionar, a API precisa de `CLERK_SECRET_KEY` no ambiente e o front envia `Bearer token` nas rotas de escrita.
 Admins tambem podem promover/rebaixar usuarios pela tela "Gerenciar roles de usuario".
+Essa tela aparece apenas para usuarios com role `admin`.
+
+### Bootstrap do primeiro admin
+
+Se voce ainda nao tem nenhum admin, promova pelo terminal:
+
+- por `userId`:
+  - `npm run clerk:role:set -- --userId user_xxx --role admin`
+- por email:
+  - `npm run clerk:role:set -- --email seu@email.com --role admin`
+
+Depois, faça login novamente e a seção "Gerenciar roles de usuario" aparecerá no curso.
+
+### Onde ver/editar role no Clerk Dashboard
+
+No Clerk, a role fica em `Users` -> selecione o usuario -> `Metadata` -> `Public metadata`.
+Exemplo:
+
+```json
+{
+  "role": "admin"
+}
+```
 
 - Nunca exponha `CLERK_SECRET_KEY` no front-end.
 - Apenas `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` deve ir para o navegador.

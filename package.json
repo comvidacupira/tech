@@ -7,7 +7,8 @@
     "api:start": "node api/server.mjs",
     "db:migrate": "node scripts/turso-migrate.mjs",
     "db:seed": "node scripts/turso-seed.mjs",
-    "db:setup": "npm run db:migrate && npm run db:seed"
+    "db:setup": "npm run db:migrate && npm run db:seed",
+    "clerk:role:set": "node scripts/clerk-set-role.mjs"
   },
   "dependencies": {
     "@clerk/backend": "^2.32.1",
