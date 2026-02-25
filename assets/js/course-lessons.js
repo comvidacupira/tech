@@ -13,13 +13,41 @@
 
     let lessons = [];
     let isAdminMode = false;
-    let currentAdminUserId = null;
+    let currentUserRole = "viewer";
     let adminNoteEl = null;
     let syncNoteEl = null;
     let adminFormWrapEl = null;
     let adminFormStatusEl = null;
     let adminFormEl = null;
+    let roleAdminWrapEl = null;
+    let roleAdminStatusEl = null;
     let editingLessonId = null;
+
+    function canManageLessons(role) {
+      return role === "admin" || role === "editor";
+    }
+
+    function canManageRoles(role) {
+      return role === "admin";
+    }
+
+    async function getAuthToken() {
+      if (!window.cvAuth || typeof window.cvAuth.getToken !== "function") {
+        return null;
+      }
+      return await window.cvAuth.getToken();
+    }
+
+    async function getWriteHeaders() {
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error("Sessao expirada. Faca login novamente.");
+      }
+      return {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      };
+    }
 
     function toThumbnail(lesson) {
       if (lesson.thumbnailUrl) return lesson.thumbnailUrl;
@@ -42,6 +70,23 @@
       syncNoteEl = null;
     }
 
+    async function resolveUserRoleFromApi() {
+      const token = await getAuthToken();
+      if (!token) return "viewer";
+
+      const response = await fetch(apiBase + "/api/auth/me", {
+        headers: { Authorization: "Bearer " + token },
+      });
+
+      if (response.status === 401) return "viewer";
+      if (!response.ok) {
+        throw new Error("Falha ao validar permissao do usuario.");
+      }
+
+      const payload = await response.json();
+      return String(payload.role || "viewer").toLowerCase();
+    }
+
     function renderAdminNote() {
       if (!galleryTitle) return;
 
@@ -56,7 +101,7 @@
       if (adminNoteEl) return;
       adminNoteEl = document.createElement("p");
       adminNoteEl.className = "admin-mode-note";
-      adminNoteEl.textContent = "Modo admin ativo: gerencie status e cadastre novas aulas.";
+      adminNoteEl.textContent = "Permissao " + currentUserRole + ": voce pode gerenciar aulas.";
       galleryTitle.insertAdjacentElement("afterend", adminNoteEl);
     }
 
@@ -139,16 +184,20 @@
 
     async function writeEnabled(lessonId, enabled) {
       if (!apiBase || !courseSlug) return;
+      const headers = await getWriteHeaders();
       const response = await fetch(apiBase + "/api/lessons/status", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: headers,
         body: JSON.stringify({
           course: courseSlug,
           lessonId: lessonId,
           enabled: enabled,
-          updatedBy: currentAdminUserId,
         }),
       });
+
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Sem permissao para alterar aulas.");
+      }
 
       if (!response.ok) {
         throw new Error("Nao foi possivel salvar no banco.");
@@ -161,15 +210,20 @@
       if (!apiBase || !courseSlug) {
         throw new Error("API nao configurada.");
       }
+      const headers = await getWriteHeaders();
 
       const response = await fetch(
         apiBase + "/api/courses/" + encodeURIComponent(courseSlug) + "/lessons",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: headers,
           body: JSON.stringify(payload),
         },
       );
+
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Sem permissao para cadastrar aulas.");
+      }
 
       if (response.status === 409) {
         throw new Error("Conflito de aula: ajuste titulo ou posicao.");
@@ -187,6 +241,7 @@
       if (!apiBase || !courseSlug) {
         throw new Error("API nao configurada.");
       }
+      const headers = await getWriteHeaders();
 
       const response = await fetch(
         apiBase +
@@ -196,10 +251,14 @@
           encodeURIComponent(lessonId),
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: headers,
           body: JSON.stringify(payload),
         },
       );
+
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Sem permissao para editar aulas.");
+      }
 
       if (response.status === 409) {
         throw new Error("Conflito de aula: ajuste titulo ou posicao.");
@@ -218,6 +277,10 @@
       if (!apiBase || !courseSlug) {
         throw new Error("API nao configurada.");
       }
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error("Sessao expirada. Faca login novamente.");
+      }
 
       const response = await fetch(
         apiBase +
@@ -225,8 +288,15 @@
           encodeURIComponent(courseSlug) +
           "/lessons/" +
           encodeURIComponent(lessonId),
-        { method: "DELETE" },
+        {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + token },
+        },
       );
+
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Sem permissao para excluir aulas.");
+      }
 
       if (response.status === 404) {
         throw new Error("Aula nao encontrada para exclusao.");
@@ -235,6 +305,45 @@
       if (!response.ok) {
         throw new Error("Nao foi possivel excluir aula.");
       }
+    }
+
+    async function updateUserRole(targetUserId, role) {
+      if (!apiBase) {
+        throw new Error("API nao configurada.");
+      }
+      const token = await getAuthToken();
+      if (!token) {
+        throw new Error("Sessao expirada. Faca login novamente.");
+      }
+
+      const response = await fetch(
+        apiBase +
+          "/api/admin/users/" +
+          encodeURIComponent(targetUserId) +
+          "/role",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({ role: role }),
+        },
+      );
+
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Sem permissao para gerenciar roles.");
+      }
+
+      if (response.status === 404) {
+        throw new Error("Usuario nao encontrado no Clerk.");
+      }
+
+      if (!response.ok) {
+        throw new Error("Nao foi possivel atualizar role do usuario.");
+      }
+
+      return await response.json();
     }
 
     function setAdminFormStatus(message, tone) {
@@ -503,7 +612,6 @@
           description: description,
           videoId: videoId,
           enabled: enabled,
-          updatedBy: currentAdminUserId,
         };
 
         if (positionRaw) {
@@ -541,13 +649,78 @@
       galleryTitle.insertAdjacentElement("beforebegin", adminFormWrapEl);
     }
 
+    function renderRoleAdminForm() {
+      if (!galleryTitle) return;
+
+      if (!canManageRoles(currentUserRole)) {
+        if (roleAdminWrapEl) {
+          roleAdminWrapEl.remove();
+          roleAdminWrapEl = null;
+          roleAdminStatusEl = null;
+        }
+        return;
+      }
+
+      if (roleAdminWrapEl) return;
+
+      roleAdminWrapEl = document.createElement("section");
+      roleAdminWrapEl.className = "admin-role-box";
+      roleAdminWrapEl.innerHTML = [
+        "<h3>Gerenciar roles de usuario</h3>",
+        '<form class="admin-role-form">',
+        '<label>User ID do Clerk<input type="text" name="userId" required></label>',
+        '<label>Nova role<select name="role" required><option value="viewer">viewer</option><option value="editor">editor</option><option value="admin">admin</option></select></label>',
+        '<button type="submit" class="admin-role-submit">Atualizar role</button>',
+        "</form>",
+      ].join("");
+
+      roleAdminStatusEl = document.createElement("p");
+      roleAdminStatusEl.className = "admin-role-status";
+      roleAdminWrapEl.appendChild(roleAdminStatusEl);
+
+      const form = roleAdminWrapEl.querySelector(".admin-role-form");
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const userId = String(formData.get("userId") || "").trim();
+        const role = String(formData.get("role") || "").trim().toLowerCase();
+
+        roleAdminStatusEl.textContent = "Atualizando role...";
+        roleAdminStatusEl.classList.remove("is-error", "is-success");
+
+        try {
+          await updateUserRole(userId, role);
+          roleAdminStatusEl.textContent = "Role atualizada com sucesso.";
+          roleAdminStatusEl.classList.add("is-success");
+        } catch (error) {
+          const message = error && error.message
+            ? error.message
+            : "Falha ao atualizar role.";
+          roleAdminStatusEl.textContent = message;
+          roleAdminStatusEl.classList.add("is-error");
+        }
+      });
+
+      galleryTitle.insertAdjacentElement("beforebegin", roleAdminWrapEl);
+    }
+
     function setAdminMode(nextMode) {
       isAdminMode = Boolean(nextMode);
       renderAdminNote();
+      renderRoleAdminForm();
       renderAdminForm();
       renderGallery();
       buildCourseList();
       ensureSelectedPlayable();
+    }
+
+    async function refreshRoleAndMode() {
+      try {
+        currentUserRole = await resolveUserRoleFromApi();
+      } catch (error) {
+        currentUserRole = "viewer";
+      }
+      setAdminMode(canManageLessons(currentUserRole));
     }
 
     async function loadLessonsFromApi() {
@@ -592,19 +765,25 @@
 
     if (window.cvAuth && window.cvAuth.ready) {
       window.cvAuth.ready.then(function (auth) {
-        currentAdminUserId =
-          auth && auth.user && auth.user.id ? String(auth.user.id) : null;
-        setAdminMode(auth && auth.isSignedIn);
+        if (auth && auth.isSignedIn) {
+          refreshRoleAndMode();
+          return;
+        }
+
+        currentUserRole = "viewer";
+        setAdminMode(false);
       });
     }
 
     window.addEventListener("cv-auth-ready", function (event) {
       const detail = event.detail || {};
-      currentAdminUserId =
-        detail && detail.user && detail.user.id
-          ? String(detail.user.id)
-          : null;
-      setAdminMode(detail.isSignedIn);
+      if (detail.isSignedIn) {
+        refreshRoleAndMode();
+        return;
+      }
+
+      currentUserRole = "viewer";
+      setAdminMode(false);
     });
   }
 

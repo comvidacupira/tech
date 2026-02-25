@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { createClerkClient, verifyToken } from "@clerk/backend";
 import { getEnv } from "./lib/env.mjs";
 import {
   createCourseLesson,
@@ -13,9 +14,88 @@ import {
 
 const app = express();
 const port = Number(getEnv("API_PORT", "3080"));
+const clerkSecretKey = getEnv("CLERK_SECRET_KEY");
+const clerkAuthorizedParties = getEnv(
+  "CLERK_AUTHORIZED_PARTIES",
+  "http://127.0.0.1:4000,http://localhost:4000",
+)
+  .split(",")
+  .map((value) => value.trim())
+  .filter(Boolean);
+const writeRoles = new Set(["admin", "editor"]);
+const allowedRoles = new Set(["admin", "editor", "viewer"]);
+const clerkClient = clerkSecretKey
+  ? createClerkClient({ secretKey: clerkSecretKey })
+  : null;
 
 app.use(cors());
 app.use(express.json());
+
+function getBearerToken(req) {
+  const raw = String(req.headers.authorization || "");
+  if (!raw.toLowerCase().startsWith("bearer ")) return "";
+  return raw.slice(7).trim();
+}
+
+function normalizeRole(value) {
+  const role = String(value || "viewer").trim().toLowerCase();
+  if (!role) return "viewer";
+  return role;
+}
+
+async function readAuthContext(req) {
+  if (!clerkSecretKey || !clerkClient) return null;
+  const token = getBearerToken(req);
+  if (!token) return null;
+
+  try {
+    const payload = await verifyToken(token, {
+      secretKey: clerkSecretKey,
+      authorizedParties: clerkAuthorizedParties,
+    });
+
+    const userId = String(payload?.sub || "").trim();
+    if (!userId) return null;
+
+    const user = await clerkClient.users.getUser(userId);
+    const role = normalizeRole(user?.publicMetadata?.role);
+    return { userId, role };
+  } catch (error) {
+    return null;
+  }
+}
+
+async function requireEditorRole(req, res, next) {
+  const auth = await readAuthContext(req);
+  if (!auth) {
+    res.status(401).json({ ok: false, error: "unauthorized" });
+    return;
+  }
+
+  if (!writeRoles.has(auth.role)) {
+    res.status(403).json({ ok: false, error: "forbidden" });
+    return;
+  }
+
+  req.authUser = auth;
+  next();
+}
+
+async function requireAdminRole(req, res, next) {
+  const auth = await readAuthContext(req);
+  if (!auth) {
+    res.status(401).json({ ok: false, error: "unauthorized" });
+    return;
+  }
+
+  if (auth.role !== "admin") {
+    res.status(403).json({ ok: false, error: "forbidden" });
+    return;
+  }
+
+  req.authUser = auth;
+  next();
+}
 
 app.get("/health", async (_req, res) => {
   try {
@@ -46,12 +126,12 @@ app.get("/api/lessons/status", async (req, res) => {
   }
 });
 
-app.put("/api/lessons/status", async (req, res) => {
+app.put("/api/lessons/status", requireEditorRole, async (req, res) => {
   try {
     const course = String(req.body?.course || "").trim();
     const lessonId = String(req.body?.lessonId || "").trim();
     const enabled = Boolean(req.body?.enabled);
-    const updatedBy = req.body?.updatedBy ? String(req.body.updatedBy) : null;
+    const updatedBy = req.authUser ? String(req.authUser.userId) : null;
 
     if (!course || !lessonId) {
       res.status(400).json({ ok: false, error: "course_and_lesson_required" });
@@ -99,6 +179,56 @@ app.get("/api/courses/:courseSlug/lessons", async (req, res) => {
   }
 });
 
+app.get("/api/auth/me", async (req, res) => {
+  const auth = await readAuthContext(req);
+  if (!auth) {
+    res.status(401).json({ ok: false, error: "unauthorized" });
+    return;
+  }
+
+  res.json({ ok: true, userId: auth.userId, role: auth.role });
+});
+
+app.put("/api/admin/users/:userId/role", requireAdminRole, async (req, res) => {
+  try {
+    if (!clerkClient) {
+      res.status(500).json({ ok: false, error: "clerk_not_configured" });
+      return;
+    }
+
+    const targetUserId = String(req.params.userId || "").trim();
+    const nextRole = normalizeRole(req.body?.role);
+
+    if (!targetUserId || !allowedRoles.has(nextRole)) {
+      res.status(400).json({ ok: false, error: "invalid_payload" });
+      return;
+    }
+
+    const targetUser = await clerkClient.users.getUser(targetUserId);
+    const previousMetadata = targetUser?.publicMetadata || {};
+    const nextMetadata = { ...previousMetadata, role: nextRole };
+
+    await clerkClient.users.updateUserMetadata(targetUserId, {
+      publicMetadata: nextMetadata,
+    });
+
+    res.json({
+      ok: true,
+      userId: targetUserId,
+      role: nextRole,
+      updatedBy: req.authUser.userId,
+    });
+  } catch (error) {
+    const message = String(error?.message || "");
+    if (message.toLowerCase().includes("not found")) {
+      res.status(404).json({ ok: false, error: "user_not_found" });
+      return;
+    }
+
+    res.status(500).json({ ok: false, error: "write_failed" });
+  }
+});
+
 function slugifyLessonId(value) {
   return String(value || "")
     .normalize("NFD")
@@ -140,13 +270,13 @@ function extractYoutubeVideoId(rawValue) {
   return "";
 }
 
-app.post("/api/courses/:courseSlug/lessons", async (req, res) => {
+app.post("/api/courses/:courseSlug/lessons", requireEditorRole, async (req, res) => {
   try {
     const courseSlug = String(req.params.courseSlug || "").trim();
     const title = String(req.body?.title || "").trim();
     const description = String(req.body?.description || "").trim();
     const videoId = extractYoutubeVideoId(req.body?.videoId);
-    const updatedBy = req.body?.updatedBy ? String(req.body.updatedBy).trim() : null;
+    const updatedBy = req.authUser ? String(req.authUser.userId) : null;
     const requestedLessonId = String(req.body?.lessonId || "").trim();
     const lessonId = requestedLessonId || slugifyLessonId(title);
     const positionRaw = req.body?.position;
@@ -183,14 +313,14 @@ app.post("/api/courses/:courseSlug/lessons", async (req, res) => {
   }
 });
 
-app.put("/api/courses/:courseSlug/lessons/:lessonId", async (req, res) => {
+app.put("/api/courses/:courseSlug/lessons/:lessonId", requireEditorRole, async (req, res) => {
   try {
     const courseSlug = String(req.params.courseSlug || "").trim();
     const lessonId = String(req.params.lessonId || "").trim();
     const title = String(req.body?.title || "").trim();
     const description = String(req.body?.description || "").trim();
     const videoId = extractYoutubeVideoId(req.body?.videoId);
-    const updatedBy = req.body?.updatedBy ? String(req.body.updatedBy).trim() : null;
+    const updatedBy = req.authUser ? String(req.authUser.userId) : null;
     const position = Number(req.body?.position);
     const enabled = Boolean(req.body?.enabled);
 
@@ -227,7 +357,7 @@ app.put("/api/courses/:courseSlug/lessons/:lessonId", async (req, res) => {
   }
 });
 
-app.delete("/api/courses/:courseSlug/lessons/:lessonId", async (req, res) => {
+app.delete("/api/courses/:courseSlug/lessons/:lessonId", requireEditorRole, async (req, res) => {
   try {
     const courseSlug = String(req.params.courseSlug || "").trim();
     const lessonId = String(req.params.lessonId || "").trim();
