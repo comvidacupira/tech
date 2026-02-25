@@ -10,7 +10,12 @@ vendor/bundle/
 # Logs and local temp files
 *.log
 *.tmp
+*.env.local
+.env*
 
 # OS/editor noise
 .DS_Store
 Thumbs.db
+
+# Node
+node_modules/
