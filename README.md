@@ -25,6 +25,7 @@ API em `http://localhost:3080` (`api/server.mjs`):
 
 - `GET /api/courses`
 - `GET /api/courses/:courseSlug/lessons`
+- `GET /api/auth/me` (role do usuario autenticado)
 - `POST /api/courses/:courseSlug/lessons`
 - `PUT /api/courses/:courseSlug/lessons/:lessonId`
 - `DELETE /api/courses/:courseSlug/lessons/:lessonId`
@@ -50,7 +51,12 @@ API em `http://localhost:3080` (`api/server.mjs`):
 
 ## Auth (Clerk)
 
-O botao de `Ativar/Desativar` aparece somente para usuario autenticado.
+Controle de permissao por role usa `publicMetadata.role` no Clerk:
+
+- `admin` e `editor`: podem criar/editar/excluir/ativar/desativar aulas
+- `viewer` (ou sem role): somente leitura
+
+Para funcionar, a API precisa de `CLERK_SECRET_KEY` no ambiente e o front envia `Bearer token` nas rotas de escrita.
 
 - Nunca exponha `CLERK_SECRET_KEY` no front-end.
 - Apenas `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` deve ir para o navegador.
