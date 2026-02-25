@@ -71,20 +71,9 @@ image: /assets/images/hardware.jpg
     const current = document.getElementById("lesson-current");
     const allCards = Array.from(document.querySelectorAll(".js-video-card"));
     const courseList = document.getElementById("course-list");
-
-    const params = new URLSearchParams(window.location.search);
-    const adminOn = params.get("admin") === "1";
-    const adminOff = params.get("admin") === "0";
-
-    if (adminOn) {
-      localStorage.setItem("cv_admin_mode", "1");
-    }
-
-    if (adminOff) {
-      localStorage.removeItem("cv_admin_mode");
-    }
-
-    const isAdminMode = adminOn || (!adminOff && localStorage.getItem("cv_admin_mode") === "1");
+    let isAdminMode = false;
+    let adminNoteEl = null;
+    const adminToggleByCard = new Map();
 
     function cardId(card, index) {
       const raw = (card.dataset.title || "aula-" + (index + 1)).toLowerCase().trim();
@@ -189,15 +178,7 @@ image: /assets/images/hardware.jpg
       current.textContent = "Nenhuma aula ativa no momento.";
     }
 
-    allCards.forEach(function (card, index) {
-      card.addEventListener("click", function (event) {
-        if (event.target.closest(".admin-toggle")) return;
-        if (!enabledByCard.get(card)) return;
-        playFromCard(card, true);
-      });
-
-      if (!isAdminMode) return;
-
+    function makeAdminToggle(card, index) {
       const adminToggle = document.createElement("button");
       adminToggle.type = "button";
       adminToggle.className = "admin-toggle";
@@ -212,20 +193,74 @@ image: /assets/images/hardware.jpg
         buildCourseListFromCards();
         ensureSelectedPlayable();
       });
-      card.appendChild(adminToggle);
-    });
-
-    if (isAdminMode) {
-      const title = document.querySelector(".gallery-title");
-      if (title) {
-        const note = document.createElement("p");
-        note.className = "admin-mode-note";
-        note.textContent = "Modo admin ativo: use o botao em cada aula para ativar ou desativar.";
-        title.insertAdjacentElement("afterend", note);
-      }
+      return adminToggle;
     }
+
+    function renderAdminNote() {
+      if (!isAdminMode) {
+        if (adminNoteEl) {
+          adminNoteEl.remove();
+          adminNoteEl = null;
+        }
+        return;
+      }
+
+      if (adminNoteEl) return;
+
+      const title = document.querySelector(".gallery-title");
+      if (!title) return;
+
+      adminNoteEl = document.createElement("p");
+      adminNoteEl.className = "admin-mode-note";
+      adminNoteEl.textContent = "Modo admin ativo: use o botao em cada aula para ativar ou desativar.";
+      title.insertAdjacentElement("afterend", adminNoteEl);
+    }
+
+    function setAdminMode(nextMode) {
+      isAdminMode = Boolean(nextMode);
+
+      allCards.forEach(function (card, index) {
+        applyCardState(card, enabledByCard.get(card));
+        const existingToggle = adminToggleByCard.get(card);
+
+        if (isAdminMode) {
+          if (!existingToggle) {
+            const toggle = makeAdminToggle(card, index);
+            adminToggleByCard.set(card, toggle);
+            card.appendChild(toggle);
+          }
+          return;
+        }
+
+        if (existingToggle) {
+          existingToggle.remove();
+          adminToggleByCard.delete(card);
+        }
+      });
+
+      renderAdminNote();
+    }
+
+    allCards.forEach(function (card) {
+      card.addEventListener("click", function (event) {
+        if (event.target.closest(".admin-toggle")) return;
+        if (!enabledByCard.get(card)) return;
+        playFromCard(card, true);
+      });
+    });
 
     buildCourseListFromCards();
     ensureSelectedPlayable();
+
+    if (window.cvAuth && window.cvAuth.ready) {
+      window.cvAuth.ready.then(function (auth) {
+        setAdminMode(auth && auth.isSignedIn);
+      });
+    }
+
+    window.addEventListener("cv-auth-ready", function (event) {
+      const detail = event.detail || {};
+      setAdminMode(detail.isSignedIn);
+    });
   })();
 </script>

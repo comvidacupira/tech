@@ -45,19 +45,22 @@ Exemplo:
 
 Quando uma aula esta com `data-enabled="false"`, ela aparece em cinza, fica marcada como desativada na lista e nao pode ser reproduzida.
 
-### Botao de ativar/desativar (modo admin sem banco)
+### Botao de ativar/desativar (modo admin com Clerk)
 
-Para liberar o botao de controle no proprio card da aula, abra a pagina do curso com:
+O botao `Ativar/Desativar` aparece somente para usuario autenticado no Clerk.
 
-- `?admin=1` no final da URL
-  - Exemplo: `/cursos/word/?admin=1`
+Passos:
 
-No modo admin, cada card recebe um botao `Ativar/Desativar`.
-O estado fica salvo no `localStorage` do navegador (por curso e por aula).
+1. Configure o arquivo `.env.local` (raiz ou `_cursos/.env.local`) com:
+   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+2. Gere a configuracao usada no site:
+   - `powershell -ExecutionPolicy Bypass -File scripts/sync-clerk-env.ps1`
+3. Rode o projeto normalmente com Jekyll.
 
-Para sair do modo admin:
+Observacao de seguranca:
 
-- use `?admin=0` na URL
+- Nunca exponha `CLERK_SECRET_KEY` no front-end.
+- Neste projeto, somente a chave publica (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`) e usada no navegador.
 
 Fluxo recomendado:
 

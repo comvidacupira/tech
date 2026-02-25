@@ -37,7 +37,40 @@ body {
 .header-main {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.9rem;
+}
+
+.auth-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-user {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.auth-button {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.auth-button:hover {
+  background: #f1f6f2;
+}
+
+.auth-info {
+  font-size: 0.85rem;
+  color: #8b5b00;
 }
 
 .brand-logo {
