@@ -1,0 +1,16 @@
+{
+  "name": "comvida-tech-turso-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "api:start": "node api/server.mjs",
+    "db:migrate": "node scripts/turso-migrate.mjs"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2"
+  }
+}

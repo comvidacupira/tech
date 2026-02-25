@@ -101,7 +101,10 @@ image: /assets/images/windows.jpg
     const current = document.getElementById("lesson-current");
     const allCards = Array.from(document.querySelectorAll(".js-video-card"));
     const courseList = document.getElementById("course-list");
+    const courseSlug = window.location.pathname.split("/").filter(Boolean).pop() || "";
+    const apiBase = String(window.PUBLIC_DATABASE_URL || "").replace(/\/$/, "");
     let isAdminMode = false;
+    let currentAdminUserId = null;
     let adminNoteEl = null;
     const adminToggleByCard = new Map();
 
@@ -110,19 +113,29 @@ image: /assets/images/windows.jpg
       return raw.replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
     }
 
-    function storageKey(card, index) {
-      return "cv_lesson_enabled:" + window.location.pathname + ":" + cardId(card, index);
-    }
-
-    function readEnabled(card, index) {
-      const saved = localStorage.getItem(storageKey(card, index));
-      if (saved === "true") return true;
-      if (saved === "false") return false;
+    function readEnabled(card) {
       return card.dataset.enabled !== "false";
     }
 
-    function writeEnabled(card, index, enabled) {
-      localStorage.setItem(storageKey(card, index), String(enabled));
+    async function writeEnabled(card, index, enabled) {
+      if (!apiBase || !courseSlug) return;
+
+      const response = await fetch(apiBase + "/api/lessons/status", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          course: courseSlug,
+          lessonId: cardId(card, index),
+          enabled: enabled,
+          updatedBy: currentAdminUserId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Nao foi possivel salvar no banco.");
+      }
     }
 
     const enabledByCard = new Map();
@@ -135,11 +148,42 @@ image: /assets/images/windows.jpg
       card.setAttribute("tabindex", enabled ? "0" : "-1");
     }
 
-    allCards.forEach(function (card, index) {
-      const enabled = readEnabled(card, index);
+    allCards.forEach(function (card) {
+      const enabled = readEnabled(card);
       enabledByCard.set(card, enabled);
       applyCardState(card, enabled);
     });
+
+    async function loadStatusesFromApi() {
+      if (!apiBase || !courseSlug) return;
+
+      const response = await fetch(apiBase + "/api/lessons/status?course=" + encodeURIComponent(courseSlug));
+      if (!response.ok) return;
+
+      const payload = await response.json();
+      if (!payload || !Array.isArray(payload.lessons)) return;
+
+      const enabledByLessonId = new Map();
+      payload.lessons.forEach(function (lesson) {
+        enabledByLessonId.set(String(lesson.lessonId), Boolean(lesson.enabled));
+      });
+
+      allCards.forEach(function (card, index) {
+        const lessonId = cardId(card, index);
+        if (!enabledByLessonId.has(lessonId)) return;
+        const enabled = enabledByLessonId.get(lessonId);
+        enabledByCard.set(card, enabled);
+        applyCardState(card, enabled);
+        const toggle = adminToggleByCard.get(card);
+        if (toggle) {
+          toggle.textContent = enabled ? "Desativar" : "Ativar";
+          toggle.setAttribute("aria-pressed", String(!enabled));
+        }
+      });
+
+      buildCourseListFromCards();
+      ensureSelectedPlayable();
+    }
 
     function getEnabledCards() {
       return allCards.filter(function (card) {
@@ -220,14 +264,22 @@ image: /assets/images/windows.jpg
       function onToggle(event) {
         event.stopPropagation();
         event.preventDefault();
+        const previousEnabled = enabledByCard.get(card);
         const nextEnabled = !enabledByCard.get(card);
         enabledByCard.set(card, nextEnabled);
         applyCardState(card, nextEnabled);
-        writeEnabled(card, index, nextEnabled);
         adminToggle.textContent = nextEnabled ? "Desativar" : "Ativar";
         adminToggle.setAttribute("aria-pressed", String(!nextEnabled));
         buildCourseListFromCards();
         ensureSelectedPlayable();
+        writeEnabled(card, index, nextEnabled).catch(function () {
+          enabledByCard.set(card, previousEnabled);
+          applyCardState(card, previousEnabled);
+          adminToggle.textContent = previousEnabled ? "Desativar" : "Ativar";
+          adminToggle.setAttribute("aria-pressed", String(!previousEnabled));
+          buildCourseListFromCards();
+          ensureSelectedPlayable();
+        });
       }
 
       adminToggle.addEventListener("click", onToggle);
@@ -300,15 +352,18 @@ image: /assets/images/windows.jpg
 
     buildCourseListFromCards();
     ensureSelectedPlayable();
+    loadStatusesFromApi();
 
     if (window.cvAuth && window.cvAuth.ready) {
       window.cvAuth.ready.then(function (auth) {
+        currentAdminUserId = auth && auth.user && auth.user.id ? String(auth.user.id) : null;
         setAdminMode(auth && auth.isSignedIn);
       });
     }
 
     window.addEventListener("cv-auth-ready", function (event) {
       const detail = event.detail || {};
+      currentAdminUserId = detail && detail.user && detail.user.id ? String(detail.user.id) : null;
       setAdminMode(detail.isSignedIn);
     });
   })();

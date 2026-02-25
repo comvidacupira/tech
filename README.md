@@ -62,6 +62,32 @@ Observacao de seguranca:
 - Nunca exponha `CLERK_SECRET_KEY` no front-end.
 - Neste projeto, somente a chave publica (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`) e usada no navegador.
 
+## Persistencia no Turso (ativacao/desativacao)
+
+Foi adicionada uma API local para salvar o status das aulas no Turso.
+
+Arquivos principais:
+
+- `db/schema.sql` (estrutura da tabela `lesson_visibility`)
+- `api/server.mjs` (API em `http://localhost:3080`)
+- `api/lib/db.mjs` (acesso ao Turso)
+- `scripts/turso-migrate.mjs` (aplica schema)
+
+Passo a passo:
+
+1. Instale dependencias Node:
+   - `npm install`
+2. Aplique o schema no Turso:
+   - `npm run db:migrate`
+3. Gere o config do front (Clerk + URL da API):
+   - `powershell -ExecutionPolicy Bypass -File scripts/sync-clerk-env.ps1`
+4. Inicie API local:
+   - `npm run api:start`
+5. Inicie o site Jekyll em outro terminal:
+   - `bundle exec jekyll serve`
+
+Com isso, ao ativar/desativar aula no modo admin, o status passa a ser salvo no Turso.
+
 Fluxo recomendado:
 
 1. Uma pessoa cria/edita as aulas em Markdown.

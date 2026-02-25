@@ -22,10 +22,17 @@ if ([string]::IsNullOrWhiteSpace($key)) {
   throw "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY vazia em $envFile"
 }
 
+$dbLine = Get-Content $envFile | Where-Object { $_ -match "^\s*NEXT_PUBLIC_DATABASE_URL\s*=" } | Select-Object -First 1
+$dbUrl = "http://localhost:3080"
+if ($dbLine) {
+  $dbUrl = ($dbLine -split "=", 2)[1].Trim().Trim('"').Trim("'")
+}
+
 $outFile = Join-Path $PSScriptRoot "..\_includes\clerk-config.html"
 $content = @"
 <script>
   window.CLERK_PUBLISHABLE_KEY = "$key";
+  window.PUBLIC_DATABASE_URL = "$dbUrl";
 </script>
 "@
 
