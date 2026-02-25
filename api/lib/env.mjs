@@ -10,6 +10,7 @@ function loadEnvFile(filePath) {
 
 const root = process.cwd();
 loadEnvFile(path.join(root, ".env.local"));
+loadEnvFile(path.join(root, "scripts", ".env.local"));
 loadEnvFile(path.join(root, "_cursos", ".env.local"));
 
 export function getEnv(name, fallback = "") {

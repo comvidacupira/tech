@@ -1,10 +1,35 @@
 ---
 layout: default
 ---
-<article class="course-page">
+<article class="course-page" data-course-slug="{{ page.course_slug | default: page.slug }}">
   <p><a class="back-link" href="{{ '/' | relative_url }}">Voltar para cursos</a></p>
   <h1>{{ page.course_name }}</h1>
   <p class="summary">{{ page.summary }}</p>
+
+  <details class="list-box" open>
+    <summary>Ver/ocultar lista de aulas</summary>
+    <ul id="course-list" class="course-list"></ul>
+  </details>
+
+  <h2>Voce esta assistindo a aula:</h2>
+
+  <div class="video-player-box">
+    <div class="video-player-frame">
+      <iframe
+        id="lesson-player"
+        src=""
+        title="Player da aula"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <p id="lesson-current" class="video-current">Carregando aulas...</p>
+  </div>
+
+  <h3 class="gallery-title">Galeria de aulas</h3>
+  <hr class="gallery-divider" />
+
+  <div class="video-gallery" id="video-gallery"></div>
   <hr>
   {{ content }}
 </article>

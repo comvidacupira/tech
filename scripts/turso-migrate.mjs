@@ -11,6 +11,7 @@ function loadEnv(filePath) {
 
 const root = process.cwd();
 loadEnv(path.join(root, ".env.local"));
+loadEnv(path.join(root, "scripts", ".env.local"));
 loadEnv(path.join(root, "_cursos", ".env.local"));
 
 const url = process.env.DATABASE_URL;

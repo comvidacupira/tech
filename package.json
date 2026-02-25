@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "api:start": "node api/server.mjs",
-    "db:migrate": "node scripts/turso-migrate.mjs"
+    "db:migrate": "node scripts/turso-migrate.mjs",
+    "db:seed": "node scripts/turso-seed.mjs",
+    "db:setup": "npm run db:migrate && npm run db:seed"
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
