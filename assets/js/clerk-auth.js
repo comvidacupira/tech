@@ -2,8 +2,19 @@
   const key = window.CLERK_PUBLISHABLE_KEY;
   const authControls = document.getElementById("auth-controls");
   const ready = createAuthReadyPromise();
+  let currentClerk = null;
 
-  window.cvAuth = { ready: ready };
+  window.cvAuth = {
+    ready: ready,
+    getToken: async function () {
+      if (!currentClerk || !currentClerk.session) return null;
+      try {
+        return await currentClerk.session.getToken();
+      } catch (error) {
+        return null;
+      }
+    },
+  };
 
   function createAuthReadyPromise() {
     return new Promise(function (resolve) {
@@ -41,6 +52,7 @@
         try {
           const clerk = await resolveClerkClient();
           await clerk.load();
+          currentClerk = clerk;
 
           if (clerk.user) {
             renderSignedIn(clerk);
