@@ -132,6 +132,7 @@ image: /assets/images/windows.jpg
       card.classList.toggle("is-disabled", !enabled);
       card.classList.toggle("is-admin-mode", isAdminMode);
       card.setAttribute("aria-disabled", String(!enabled));
+      card.setAttribute("tabindex", enabled ? "0" : "-1");
     }
 
     allCards.forEach(function (card, index) {
@@ -209,19 +210,31 @@ image: /assets/images/windows.jpg
     }
 
     function makeAdminToggle(card, index) {
-      const adminToggle = document.createElement("button");
-      adminToggle.type = "button";
+      const adminToggle = document.createElement("span");
       adminToggle.className = "admin-toggle";
+      adminToggle.setAttribute("role", "button");
+      adminToggle.setAttribute("tabindex", "0");
       adminToggle.textContent = enabledByCard.get(card) ? "Desativar" : "Ativar";
-      adminToggle.addEventListener("click", function (event) {
+      adminToggle.setAttribute("aria-pressed", String(!enabledByCard.get(card)));
+
+      function onToggle(event) {
         event.stopPropagation();
+        event.preventDefault();
         const nextEnabled = !enabledByCard.get(card);
         enabledByCard.set(card, nextEnabled);
         applyCardState(card, nextEnabled);
         writeEnabled(card, index, nextEnabled);
         adminToggle.textContent = nextEnabled ? "Desativar" : "Ativar";
+        adminToggle.setAttribute("aria-pressed", String(!nextEnabled));
         buildCourseListFromCards();
         ensureSelectedPlayable();
+      }
+
+      adminToggle.addEventListener("click", onToggle);
+      adminToggle.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          onToggle(event);
+        }
       });
       return adminToggle;
     }
@@ -275,6 +288,12 @@ image: /assets/images/windows.jpg
       card.addEventListener("click", function (event) {
         if (event.target.closest(".admin-toggle")) return;
         if (!enabledByCard.get(card)) return;
+        playFromCard(card, true);
+      });
+      card.addEventListener("keydown", function (event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        if (!enabledByCard.get(card)) return;
+        event.preventDefault();
         playFromCard(card, true);
       });
     });

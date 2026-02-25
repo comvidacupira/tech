@@ -308,6 +308,7 @@ ol li {
 
 .video-card.is-disabled:not(.is-admin-mode) {
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 .video-card.is-disabled.is-active {
