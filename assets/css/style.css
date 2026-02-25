@@ -317,10 +317,6 @@ ol li {
 }
 
 .video-card .admin-toggle {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  z-index: 1;
   border: 1px solid #c8d4cd;
   background: rgba(255, 255, 255, 0.96);
   color: #1f2a23;
@@ -333,6 +329,35 @@ ol li {
 
 .video-card .admin-toggle:hover {
   background: #f2f6f3;
+}
+
+.video-card .admin-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.video-card .admin-action {
+  border: 1px solid #c8d4cd;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1f2a23;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.video-card .admin-action:hover {
+  background: #f2f6f3;
+}
+
+.video-card .admin-delete {
+  border-color: #efb8b0;
+  color: #8b1f00;
 }
 
 .admin-mode-note {
@@ -408,5 +433,120 @@ ol li {
   border-radius: 8px;
   padding: 0.45rem 0.65rem;
   font-size: 0.9rem;
+}
+
+.admin-form-box {
+  margin: 0.85rem 0 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0.85rem 0.95rem;
+}
+
+.admin-form-box h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.admin-lesson-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.admin-lesson-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.admin-lesson-form label:nth-child(2) {
+  grid-column: 1 / -1;
+}
+
+.admin-lesson-form input[type="text"],
+.admin-lesson-form input[type="number"],
+.admin-lesson-form textarea {
+  width: 100%;
+  border: 1px solid #c9d7ce;
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+
+.admin-lesson-form textarea {
+  resize: vertical;
+  min-height: 76px;
+}
+
+.admin-lesson-form .checkbox-row {
+  align-self: end;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.admin-submit {
+  align-self: end;
+  justify-self: start;
+  border: 1px solid #0d8a5c;
+  background: #0d8a5c;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-submit:hover {
+  background: #0a734d;
+  border-color: #0a734d;
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-cancel {
+  border: 1px solid #c9d7ce;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-cancel:hover {
+  background: #f2f6f3;
+}
+
+.admin-form-status {
+  margin: 0.65rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.admin-form-status.is-success {
+  color: #096546;
+}
+
+.admin-form-status.is-error {
+  color: #8b1f00;
+}
+
+@media (max-width: 760px) {
+  .admin-lesson-form {
+    grid-template-columns: 1fr;
+  }
 }
 

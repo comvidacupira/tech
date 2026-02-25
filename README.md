@@ -25,6 +25,9 @@ API em `http://localhost:3080` (`api/server.mjs`):
 
 - `GET /api/courses`
 - `GET /api/courses/:courseSlug/lessons`
+- `POST /api/courses/:courseSlug/lessons`
+- `PUT /api/courses/:courseSlug/lessons/:lessonId`
+- `DELETE /api/courses/:courseSlug/lessons/:lessonId`
 - `GET /api/lessons/status?course=...` (compatibilidade)
 - `PUT /api/lessons/status`
 
