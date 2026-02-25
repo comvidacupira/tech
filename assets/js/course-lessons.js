@@ -18,6 +18,8 @@
     let syncNoteEl = null;
     let adminFormWrapEl = null;
     let adminFormStatusEl = null;
+    let adminFormEl = null;
+    let editingLessonId = null;
 
     function toThumbnail(lesson) {
       if (lesson.thumbnailUrl) return lesson.thumbnailUrl;
@@ -181,6 +183,104 @@
       return payloadResponse.lesson || null;
     }
 
+    async function updateLesson(lessonId, payload) {
+      if (!apiBase || !courseSlug) {
+        throw new Error("API nao configurada.");
+      }
+
+      const response = await fetch(
+        apiBase +
+          "/api/courses/" +
+          encodeURIComponent(courseSlug) +
+          "/lessons/" +
+          encodeURIComponent(lessonId),
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      if (response.status === 409) {
+        throw new Error("Conflito de aula: ajuste titulo ou posicao.");
+      }
+
+      if (response.status === 404) {
+        throw new Error("Aula nao encontrada para edicao.");
+      }
+
+      if (!response.ok) {
+        throw new Error("Nao foi possivel editar aula.");
+      }
+    }
+
+    async function deleteLesson(lessonId) {
+      if (!apiBase || !courseSlug) {
+        throw new Error("API nao configurada.");
+      }
+
+      const response = await fetch(
+        apiBase +
+          "/api/courses/" +
+          encodeURIComponent(courseSlug) +
+          "/lessons/" +
+          encodeURIComponent(lessonId),
+        { method: "DELETE" },
+      );
+
+      if (response.status === 404) {
+        throw new Error("Aula nao encontrada para exclusao.");
+      }
+
+      if (!response.ok) {
+        throw new Error("Nao foi possivel excluir aula.");
+      }
+    }
+
+    function setAdminFormStatus(message, tone) {
+      if (!adminFormStatusEl) return;
+      adminFormStatusEl.textContent = message || "";
+      adminFormStatusEl.classList.remove("is-error", "is-success");
+      if (tone === "error") {
+        adminFormStatusEl.classList.add("is-error");
+      }
+      if (tone === "success") {
+        adminFormStatusEl.classList.add("is-success");
+      }
+    }
+
+    function resetAdminForm() {
+      if (!adminFormEl) return;
+      adminFormEl.reset();
+      editingLessonId = null;
+      const enabledField = adminFormEl.querySelector('input[name="enabled"]');
+      if (enabledField) enabledField.checked = true;
+      const submit = adminFormEl.querySelector(".admin-submit");
+      if (submit) submit.textContent = "Cadastrar aula";
+      const heading = adminFormWrapEl ? adminFormWrapEl.querySelector("h3") : null;
+      if (heading) heading.textContent = "Cadastrar nova aula";
+      const cancel = adminFormEl.querySelector(".admin-cancel");
+      if (cancel) cancel.hidden = true;
+    }
+
+    function fillAdminFormForEdit(lesson) {
+      if (!adminFormEl) return;
+      editingLessonId = lesson.lessonId;
+      adminFormEl.querySelector('input[name="title"]').value = lesson.title;
+      adminFormEl.querySelector('textarea[name="description"]').value = lesson.description;
+      adminFormEl.querySelector('input[name="videoId"]').value = lesson.videoId;
+      adminFormEl.querySelector('input[name="position"]').value = String(lesson.position);
+      adminFormEl.querySelector('input[name="enabled"]').checked = Boolean(lesson.enabled);
+      const submit = adminFormEl.querySelector(".admin-submit");
+      if (submit) submit.textContent = "Salvar edicao";
+      const heading = adminFormWrapEl ? adminFormWrapEl.querySelector("h3") : null;
+      if (heading) heading.textContent = "Editar aula";
+      const cancel = adminFormEl.querySelector(".admin-cancel");
+      if (cancel) cancel.hidden = false;
+      setAdminFormStatus("Editando aula: " + lesson.title, "");
+      adminFormWrapEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     function renderGallery() {
       if (!gallery) return;
       gallery.innerHTML = "";
@@ -250,6 +350,61 @@
         }
 
         if (isAdminMode) {
+          const adminActions = document.createElement("div");
+          adminActions.className = "admin-actions";
+
+          const edit = document.createElement("span");
+          edit.className = "admin-action admin-edit";
+          edit.setAttribute("role", "button");
+          edit.setAttribute("tabindex", "0");
+          edit.textContent = "Editar";
+          edit.addEventListener("click", function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            fillAdminFormForEdit(lesson);
+          });
+          edit.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              fillAdminFormForEdit(lesson);
+            }
+          });
+
+          const remove = document.createElement("span");
+          remove.className = "admin-action admin-delete";
+          remove.setAttribute("role", "button");
+          remove.setAttribute("tabindex", "0");
+          remove.textContent = "Excluir";
+          remove.addEventListener("click", function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            if (!window.confirm("Excluir a aula '" + lesson.title + "'?")) return;
+            deleteLesson(lesson.lessonId)
+              .then(function () {
+                if (editingLessonId === lesson.lessonId) {
+                  resetAdminForm();
+                }
+                return loadLessonsFromApi();
+              })
+              .then(function () {
+                setAdminFormStatus("Aula excluida com sucesso.", "success");
+              })
+              .catch(function (error) {
+                const message =
+                  error && error.message
+                    ? error.message
+                    : "Falha ao excluir aula.";
+                showSyncIssue(message);
+                setAdminFormStatus(message, "error");
+              });
+          });
+          remove.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              remove.click();
+            }
+          });
+
           const toggle = document.createElement("span");
           toggle.className = "admin-toggle";
           toggle.setAttribute("role", "button");
@@ -262,7 +417,11 @@
               toggleEnabled(event);
             }
           });
-          card.appendChild(toggle);
+
+          adminActions.appendChild(edit);
+          adminActions.appendChild(remove);
+          adminActions.appendChild(toggle);
+          card.appendChild(adminActions);
         }
 
         card.addEventListener("click", function (event) {
@@ -309,17 +468,26 @@
 
       const form = document.createElement("form");
       form.className = "admin-lesson-form";
+      adminFormEl = form;
       form.innerHTML = [
         '<label>Titulo<input type="text" name="title" maxlength="120" required></label>',
         '<label>Descricao<textarea name="description" rows="3" maxlength="500" required></textarea></label>',
         '<label>Video do YouTube (ID ou URL)<input type="text" name="videoId" required></label>',
         '<label>Posicao (opcional)<input type="number" name="position" min="1" step="1"></label>',
         '<label class="checkbox-row"><input type="checkbox" name="enabled" checked> Aula ativa</label>',
-        '<button type="submit" class="admin-submit">Cadastrar aula</button>',
+        '<div class="admin-form-actions"><button type="submit" class="admin-submit">Cadastrar aula</button><button type="button" class="admin-cancel" hidden>Cancelar edicao</button></div>',
       ].join("");
 
       adminFormStatusEl = document.createElement("p");
       adminFormStatusEl.className = "admin-form-status";
+
+      const cancelEditButton = form.querySelector(".admin-cancel");
+      if (cancelEditButton) {
+        cancelEditButton.addEventListener("click", function () {
+          resetAdminForm();
+          setAdminFormStatus("Edicao cancelada.", "");
+        });
+      }
 
       form.addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -340,24 +508,30 @@
 
         if (positionRaw) {
           payload.position = Number(positionRaw);
+        } else if (editingLessonId) {
+          setAdminFormStatus("Informe uma posicao valida para salvar edicao.", "error");
+          return;
         }
 
-        adminFormStatusEl.textContent = "Salvando...";
-        adminFormStatusEl.classList.remove("is-error", "is-success");
+        setAdminFormStatus("Salvando...", "");
 
         try {
-          await createLesson(payload);
+          if (editingLessonId) {
+            await updateLesson(editingLessonId, payload);
+          } else {
+            await createLesson(payload);
+          }
           await loadLessonsFromApi();
-          form.reset();
-          const enabledField = form.querySelector('input[name="enabled"]');
-          if (enabledField) enabledField.checked = true;
-          adminFormStatusEl.textContent = "Aula cadastrada com sucesso.";
-          adminFormStatusEl.classList.add("is-success");
+          if (editingLessonId) {
+            setAdminFormStatus("Aula editada com sucesso.", "success");
+          } else {
+            setAdminFormStatus("Aula cadastrada com sucesso.", "success");
+          }
+          resetAdminForm();
           clearSyncIssue();
         } catch (error) {
           const message = error && error.message ? error.message : "Falha ao cadastrar aula.";
-          adminFormStatusEl.textContent = message;
-          adminFormStatusEl.classList.add("is-error");
+          setAdminFormStatus(message, "error");
           showSyncIssue(message);
         }
       });
@@ -389,6 +563,9 @@
         if (!response.ok) {
           showSyncIssue("Falha ao ler aulas no banco (API/Turso indisponivel).");
           setCurrentText("Nao foi possivel carregar aulas.");
+          lessons = [];
+          renderGallery();
+          buildCourseList();
           return;
         }
 
@@ -405,6 +582,9 @@
       } catch (error) {
         showSyncIssue("Falha de rede ao buscar aulas. Verifique API local e conexao.");
         setCurrentText("Nao foi possivel carregar aulas.");
+        lessons = [];
+        renderGallery();
+        buildCourseList();
       }
     }
 

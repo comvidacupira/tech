@@ -3,9 +3,11 @@ import cors from "cors";
 import { getEnv } from "./lib/env.mjs";
 import {
   createCourseLesson,
+  deleteCourseLesson,
   db,
   getCourseLessons,
   getCourses,
+  updateCourseLesson,
   updateLessonEnabled,
 } from "./lib/db.mjs";
 
@@ -177,6 +179,72 @@ app.post("/api/courses/:courseSlug/lessons", async (req, res) => {
       return;
     }
 
+    res.status(500).json({ ok: false, error: "write_failed" });
+  }
+});
+
+app.put("/api/courses/:courseSlug/lessons/:lessonId", async (req, res) => {
+  try {
+    const courseSlug = String(req.params.courseSlug || "").trim();
+    const lessonId = String(req.params.lessonId || "").trim();
+    const title = String(req.body?.title || "").trim();
+    const description = String(req.body?.description || "").trim();
+    const videoId = extractYoutubeVideoId(req.body?.videoId);
+    const updatedBy = req.body?.updatedBy ? String(req.body.updatedBy).trim() : null;
+    const position = Number(req.body?.position);
+    const enabled = Boolean(req.body?.enabled);
+
+    if (!courseSlug || !lessonId || !title || !description || !videoId || !Number.isFinite(position) || position < 1) {
+      res.status(400).json({ ok: false, error: "invalid_payload" });
+      return;
+    }
+
+    const updated = await updateCourseLesson({
+      courseSlug,
+      lessonId,
+      title,
+      description,
+      videoId,
+      position,
+      enabled,
+      updatedBy
+    });
+
+    if (!updated) {
+      res.status(404).json({ ok: false, error: "lesson_not_found" });
+      return;
+    }
+
+    res.json({ ok: true, course: courseSlug, lessonId });
+  } catch (error) {
+    const message = String(error?.message || "");
+    if (message.includes("UNIQUE constraint failed")) {
+      res.status(409).json({ ok: false, error: "lesson_conflict" });
+      return;
+    }
+
+    res.status(500).json({ ok: false, error: "write_failed" });
+  }
+});
+
+app.delete("/api/courses/:courseSlug/lessons/:lessonId", async (req, res) => {
+  try {
+    const courseSlug = String(req.params.courseSlug || "").trim();
+    const lessonId = String(req.params.lessonId || "").trim();
+
+    if (!courseSlug || !lessonId) {
+      res.status(400).json({ ok: false, error: "invalid_payload" });
+      return;
+    }
+
+    const deleted = await deleteCourseLesson(courseSlug, lessonId);
+    if (!deleted) {
+      res.status(404).json({ ok: false, error: "lesson_not_found" });
+      return;
+    }
+
+    res.json({ ok: true, course: courseSlug, lessonId });
+  } catch (error) {
     res.status(500).json({ ok: false, error: "write_failed" });
   }
 });

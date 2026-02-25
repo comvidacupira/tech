@@ -151,3 +151,52 @@ export async function createCourseLesson({
     updatedBy: row.updated_by ? String(row.updated_by) : null
   };
 }
+
+export async function updateCourseLesson({
+  courseSlug,
+  lessonId,
+  title,
+  description,
+  videoId,
+  position,
+  enabled,
+  updatedBy = null
+}) {
+  const result = await db.execute({
+    sql: `
+      UPDATE lessons
+      SET
+        title = ?,
+        description = ?,
+        video_id = ?,
+        thumbnail_url = ?,
+        position = ?,
+        enabled = ?,
+        updated_at = datetime('now'),
+        updated_by = ?
+      WHERE course_slug = ? AND lesson_id = ?
+    `,
+    args: [
+      title,
+      description,
+      videoId,
+      "https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg",
+      Number(position),
+      enabled ? 1 : 0,
+      updatedBy,
+      courseSlug,
+      lessonId
+    ]
+  });
+
+  return Number(result.rowsAffected || 0) > 0;
+}
+
+export async function deleteCourseLesson(courseSlug, lessonId) {
+  const result = await db.execute({
+    sql: "DELETE FROM lessons WHERE course_slug = ? AND lesson_id = ?",
+    args: [courseSlug, lessonId]
+  });
+
+  return Number(result.rowsAffected || 0) > 0;
+}
