@@ -71,57 +71,161 @@ image: /assets/images/word.jpg
     const current = document.getElementById("lesson-current");
     const allCards = Array.from(document.querySelectorAll(".js-video-card"));
     const courseList = document.getElementById("course-list");
-    const activeCards = allCards.filter(function (card) {
+
+    const params = new URLSearchParams(window.location.search);
+    const adminOn = params.get("admin") === "1";
+    const adminOff = params.get("admin") === "0";
+
+    if (adminOn) {
+      localStorage.setItem("cv_admin_mode", "1");
+    }
+
+    if (adminOff) {
+      localStorage.removeItem("cv_admin_mode");
+    }
+
+    const isAdminMode = adminOn || (!adminOff && localStorage.getItem("cv_admin_mode") === "1");
+
+    function cardId(card, index) {
+      const raw = (card.dataset.title || "aula-" + (index + 1)).toLowerCase().trim();
+      return raw.replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    }
+
+    function storageKey(card, index) {
+      return "cv_lesson_enabled:" + window.location.pathname + ":" + cardId(card, index);
+    }
+
+    function readEnabled(card, index) {
+      const saved = localStorage.getItem(storageKey(card, index));
+      if (saved === "true") return true;
+      if (saved === "false") return false;
       return card.dataset.enabled !== "false";
+    }
+
+    function writeEnabled(card, index, enabled) {
+      localStorage.setItem(storageKey(card, index), String(enabled));
+    }
+
+    const enabledByCard = new Map();
+
+    function applyCardState(card, enabled) {
+      card.dataset.enabled = String(enabled);
+      card.classList.toggle("is-disabled", !enabled);
+      card.classList.toggle("is-admin-mode", isAdminMode);
+      card.setAttribute("aria-disabled", String(!enabled));
+    }
+
+    allCards.forEach(function (card, index) {
+      const enabled = readEnabled(card, index);
+      enabledByCard.set(card, enabled);
+      applyCardState(card, enabled);
     });
 
-    allCards.forEach(function (card) {
-      if (card.dataset.enabled === "false") {
-        card.hidden = true;
-      }
-    });
+    function getEnabledCards() {
+      return allCards.filter(function (card) {
+        return enabledByCard.get(card);
+      });
+    }
 
     function buildCourseListFromCards() {
       if (!courseList) return;
       courseList.innerHTML = "";
 
-      activeCards.forEach(function (card) {
+      allCards.forEach(function (card) {
         const title = card.dataset.title || "Aula";
         const description = card.dataset.description || "";
+        const enabled = enabledByCard.get(card);
 
         const item = document.createElement("li");
-        item.innerHTML = "<strong>" + title + "</strong> - " + description;
+        const strong = document.createElement("strong");
+        strong.textContent = title;
+        item.appendChild(strong);
+        item.appendChild(document.createTextNode(" - " + description));
+
+        if (!enabled) {
+          item.appendChild(document.createTextNode(" (desativada)"));
+        }
+
         courseList.appendChild(item);
       });
     }
 
-    function playFromCard(card) {
+    function playFromCard(card, autoplay) {
+      if (!enabledByCard.get(card)) return false;
+
       const videoId = card.dataset.videoId;
       const title = card.dataset.title;
       const description = card.dataset.description;
 
-      player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+      player.src = "https://www.youtube.com/embed/" + videoId + (autoplay ? "?autoplay=1" : "");
       current.textContent = "Reproduzindo: " + title + " - " + description;
 
-      activeCards.forEach(function (c) {
+      allCards.forEach(function (c) {
         c.classList.remove("is-active");
       });
       card.classList.add("is-active");
+      return true;
     }
 
-    activeCards.forEach(function (card) {
-      card.addEventListener("click", function () {
-        playFromCard(card);
+    function ensureSelectedPlayable() {
+      const selected = allCards.find(function (card) {
+        return card.classList.contains("is-active");
       });
-    });
+      const enabledCards = getEnabledCards();
 
-    if (activeCards.length > 0) {
-      playFromCard(activeCards[0]);
-    } else {
+      if (selected && enabledByCard.get(selected)) {
+        return;
+      }
+
+      if (enabledCards.length > 0) {
+        playFromCard(enabledCards[0], false);
+        return;
+      }
+
+      allCards.forEach(function (card) {
+        card.classList.remove("is-active");
+      });
       player.src = "";
       current.textContent = "Nenhuma aula ativa no momento.";
     }
 
+    allCards.forEach(function (card, index) {
+      card.addEventListener("click", function (event) {
+        if (event.target.closest(".admin-toggle")) return;
+        if (!enabledByCard.get(card)) return;
+        playFromCard(card, true);
+      });
+
+      if (!isAdminMode) return;
+
+      const adminToggle = document.createElement("button");
+      adminToggle.type = "button";
+      adminToggle.className = "admin-toggle";
+      adminToggle.textContent = enabledByCard.get(card) ? "Desativar" : "Ativar";
+      adminToggle.addEventListener("click", function (event) {
+        event.stopPropagation();
+        const nextEnabled = !enabledByCard.get(card);
+        enabledByCard.set(card, nextEnabled);
+        applyCardState(card, nextEnabled);
+        writeEnabled(card, index, nextEnabled);
+        adminToggle.textContent = nextEnabled ? "Desativar" : "Ativar";
+        buildCourseListFromCards();
+        ensureSelectedPlayable();
+      });
+      card.appendChild(adminToggle);
+    });
+
+    if (isAdminMode) {
+      const title = document.querySelector(".gallery-title");
+      if (title) {
+        const note = document.createElement("p");
+        note.className = "admin-mode-note";
+        note.textContent = "Modo admin ativo: use o botao em cada aula para ativar ou desativar.";
+        title.insertAdjacentElement("afterend", note);
+      }
+    }
+
     buildCourseListFromCards();
+    ensureSelectedPlayable();
   })();
 </script>

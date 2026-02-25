@@ -43,7 +43,21 @@ Exemplo:
   data-enabled="false">
 ```
 
-Quando uma aula esta com `data-enabled="false"`, ela nao aparece na lista nem na galeria.
+Quando uma aula esta com `data-enabled="false"`, ela aparece em cinza, fica marcada como desativada na lista e nao pode ser reproduzida.
+
+### Botao de ativar/desativar (modo admin sem banco)
+
+Para liberar o botao de controle no proprio card da aula, abra a pagina do curso com:
+
+- `?admin=1` no final da URL
+  - Exemplo: `/cursos/word/?admin=1`
+
+No modo admin, cada card recebe um botao `Ativar/Desativar`.
+O estado fica salvo no `localStorage` do navegador (por curso e por aula).
+
+Para sair do modo admin:
+
+- use `?admin=0` na URL
 
 Fluxo recomendado:
 

@@ -230,6 +230,7 @@ ol li {
 }
 
 .video-card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -260,6 +261,54 @@ ol li {
 .video-card.is-active {
   border-color: var(--accent-2);
   box-shadow: 0 0 0 2px rgba(18, 77, 143, 0.12);
+}
+
+.video-card.is-disabled {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.video-card.is-disabled h3,
+.video-card.is-disabled p {
+  color: #5f6762;
+}
+
+.video-card.is-disabled:not(.is-admin-mode) {
+  cursor: not-allowed;
+}
+
+.video-card.is-disabled.is-active {
+  border-color: #9da9a1;
+  box-shadow: 0 0 0 2px rgba(99, 112, 103, 0.15);
+}
+
+.video-card .admin-toggle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  border: 1px solid #c8d4cd;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1f2a23;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.video-card .admin-toggle:hover {
+  background: #f2f6f3;
+}
+
+.admin-mode-note {
+  margin: 0.45rem 0 0;
+  color: #5a2b00;
+  background: #fff4db;
+  border: 1px solid #f1d9aa;
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.9rem;
 }
 
 .list-box {
