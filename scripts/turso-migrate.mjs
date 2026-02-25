@@ -16,15 +16,29 @@ loadEnv(path.join(root, "_cursos", ".env.local"));
 
 const url = process.env.DATABASE_URL;
 const authToken = process.env.DATABASE_AUTH_TOKEN;
+const isLocalUrl =
+  typeof url === "string" &&
+  (url.startsWith("file:") ||
+    url.startsWith("http://localhost") ||
+    url.startsWith("https://localhost") ||
+    url.startsWith("http://127.0.0.1") ||
+    url.startsWith("https://127.0.0.1"));
 
-if (!url || !authToken) {
-  throw new Error("DATABASE_URL e DATABASE_AUTH_TOKEN sao obrigatorias para migracao.");
+if (!url) {
+  throw new Error("DATABASE_URL obrigatoria para migracao.");
+}
+
+if (!authToken && !isLocalUrl) {
+  throw new Error("DATABASE_AUTH_TOKEN obrigatoria para migracao em Turso remoto.");
 }
 
 const schemaPath = path.join(root, "db", "schema.sql");
 const sql = fs.readFileSync(schemaPath, "utf8");
 
-const client = createClient({ url, authToken });
+const client = createClient({
+  url,
+  ...(authToken ? { authToken } : {}),
+});
 
 const statements = sql
   .split(";")

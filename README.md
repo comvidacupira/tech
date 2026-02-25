@@ -32,6 +32,10 @@ API em `http://localhost:3080` (`api/server.mjs`):
 
 1. Instale dependencias:
    - `npm install`
+2. Configure ambiente local:
+   - Copie `.env.local.example` para `.env.local`
+   - Ajuste `DATABASE_URL` para seu Turso local (`file:./db/local.db` ou `http://127.0.0.1:8080` via `turso dev`)
+   - `NEXT_PUBLIC_DATABASE_URL` deve apontar para a API local (`http://localhost:3080`)
 2. Migre e popule o banco:
    - `npm run db:setup`
 3. Gere configuracao do front (Clerk + URL API):

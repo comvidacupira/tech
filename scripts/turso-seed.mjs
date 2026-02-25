@@ -1,10 +1,23 @@
 import { createClient } from "@libsql/client";
-import { getRequiredEnv } from "../api/lib/env.mjs";
+import { getEnv, getRequiredEnv } from "../api/lib/env.mjs";
 import { courses, lessons } from "../db/seed-data.mjs";
 
+const url = getRequiredEnv("DATABASE_URL");
+const authToken = getEnv("DATABASE_AUTH_TOKEN");
+const isLocalUrl =
+  url.startsWith("file:") ||
+  url.startsWith("http://localhost") ||
+  url.startsWith("https://localhost") ||
+  url.startsWith("http://127.0.0.1") ||
+  url.startsWith("https://127.0.0.1");
+
+if (!authToken && !isLocalUrl) {
+  throw new Error("DATABASE_AUTH_TOKEN obrigatoria para seed em Turso remoto.");
+}
+
 const client = createClient({
-  url: getRequiredEnv("DATABASE_URL"),
-  authToken: getRequiredEnv("DATABASE_AUTH_TOKEN"),
+  url,
+  ...(authToken ? { authToken } : {}),
 });
 
 for (const course of courses) {

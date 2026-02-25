@@ -1,12 +1,22 @@
 import { createClient } from "@libsql/client";
-import { getRequiredEnv } from "./env.mjs";
+import { getEnv, getRequiredEnv } from "./env.mjs";
 
 const url = getRequiredEnv("DATABASE_URL");
-const authToken = getRequiredEnv("DATABASE_AUTH_TOKEN");
+const authToken = getEnv("DATABASE_AUTH_TOKEN");
+const isLocalUrl =
+  url.startsWith("file:") ||
+  url.startsWith("http://localhost") ||
+  url.startsWith("https://localhost") ||
+  url.startsWith("http://127.0.0.1") ||
+  url.startsWith("https://127.0.0.1");
+
+if (!authToken && !isLocalUrl) {
+  throw new Error("DATABASE_AUTH_TOKEN obrigatoria para Turso remoto.");
+}
 
 export const db = createClient({
   url,
-  authToken
+  ...(authToken ? { authToken } : {})
 });
 
 export async function getCourses() {

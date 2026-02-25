@@ -1,7 +1,12 @@
 import express from "express";
 import cors from "cors";
 import { getEnv } from "./lib/env.mjs";
-import { db, getCourseLessons, getCourses, updateLessonEnabled } from "./lib/db.mjs";
+import {
+  db,
+  getCourseLessons,
+  getCourses,
+  updateLessonEnabled,
+} from "./lib/db.mjs";
 
 const app = express();
 const port = Number(getEnv("API_PORT", "3080"));
@@ -30,7 +35,7 @@ app.get("/api/lessons/status", async (req, res) => {
       lessonId: lesson.lessonId,
       enabled: lesson.enabled,
       updatedAt: lesson.updatedAt,
-      updatedBy: lesson.updatedBy
+      updatedBy: lesson.updatedBy,
     }));
     res.json({ ok: true, course, lessons });
   } catch (error) {
@@ -50,7 +55,12 @@ app.put("/api/lessons/status", async (req, res) => {
       return;
     }
 
-    const updated = await updateLessonEnabled(course, lessonId, enabled, updatedBy);
+    const updated = await updateLessonEnabled(
+      course,
+      lessonId,
+      enabled,
+      updatedBy,
+    );
     if (!updated) {
       res.status(404).json({ ok: false, error: "lesson_not_found" });
       return;
@@ -87,5 +97,5 @@ app.get("/api/courses/:courseSlug/lessons", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`API Turso ativa em http://localhost:${port}`);
+  console.log(`API Ativa em http://localhost:${port}`);
 });
