@@ -23,6 +23,7 @@ const clerkAuthorizedParties = getEnv(
   .map((value) => value.trim())
   .filter(Boolean);
 const writeRoles = new Set(["admin", "editor"]);
+const allowedRoles = new Set(["admin", "editor", "viewer"]);
 const clerkClient = clerkSecretKey
   ? createClerkClient({ secretKey: clerkSecretKey })
   : null;
@@ -72,6 +73,22 @@ async function requireEditorRole(req, res, next) {
   }
 
   if (!writeRoles.has(auth.role)) {
+    res.status(403).json({ ok: false, error: "forbidden" });
+    return;
+  }
+
+  req.authUser = auth;
+  next();
+}
+
+async function requireAdminRole(req, res, next) {
+  const auth = await readAuthContext(req);
+  if (!auth) {
+    res.status(401).json({ ok: false, error: "unauthorized" });
+    return;
+  }
+
+  if (auth.role !== "admin") {
     res.status(403).json({ ok: false, error: "forbidden" });
     return;
   }
@@ -170,6 +187,46 @@ app.get("/api/auth/me", async (req, res) => {
   }
 
   res.json({ ok: true, userId: auth.userId, role: auth.role });
+});
+
+app.put("/api/admin/users/:userId/role", requireAdminRole, async (req, res) => {
+  try {
+    if (!clerkClient) {
+      res.status(500).json({ ok: false, error: "clerk_not_configured" });
+      return;
+    }
+
+    const targetUserId = String(req.params.userId || "").trim();
+    const nextRole = normalizeRole(req.body?.role);
+
+    if (!targetUserId || !allowedRoles.has(nextRole)) {
+      res.status(400).json({ ok: false, error: "invalid_payload" });
+      return;
+    }
+
+    const targetUser = await clerkClient.users.getUser(targetUserId);
+    const previousMetadata = targetUser?.publicMetadata || {};
+    const nextMetadata = { ...previousMetadata, role: nextRole };
+
+    await clerkClient.users.updateUserMetadata(targetUserId, {
+      publicMetadata: nextMetadata,
+    });
+
+    res.json({
+      ok: true,
+      userId: targetUserId,
+      role: nextRole,
+      updatedBy: req.authUser.userId,
+    });
+  } catch (error) {
+    const message = String(error?.message || "");
+    if (message.toLowerCase().includes("not found")) {
+      res.status(404).json({ ok: false, error: "user_not_found" });
+      return;
+    }
+
+    res.status(500).json({ ok: false, error: "write_failed" });
+  }
 });
 
 function slugifyLessonId(value) {

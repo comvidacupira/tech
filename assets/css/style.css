@@ -544,8 +544,81 @@ ol li {
   color: #8b1f00;
 }
 
+.admin-role-box {
+  margin: 0.85rem 0 0.7rem;
+  border: 1px solid #f1d9aa;
+  border-radius: 12px;
+  background: #fff8e7;
+  padding: 0.85rem 0.95rem;
+}
+
+.admin-role-box h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.admin-role-form {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.admin-role-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: #6c4f1a;
+  font-weight: 600;
+}
+
+.admin-role-form input[type="text"],
+.admin-role-form select {
+  width: 100%;
+  border: 1px solid #dcc492;
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+  color: var(--ink);
+  background: #fff;
+}
+
+.admin-role-submit {
+  border: 1px solid #8d6400;
+  background: #8d6400;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-role-submit:hover {
+  background: #735200;
+  border-color: #735200;
+}
+
+.admin-role-status {
+  margin: 0.65rem 0 0;
+  font-size: 0.9rem;
+  color: #6c4f1a;
+}
+
+.admin-role-status.is-success {
+  color: #096546;
+}
+
+.admin-role-status.is-error {
+  color: #8b1f00;
+}
+
 @media (max-width: 760px) {
   .admin-lesson-form {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-role-form {
     grid-template-columns: 1fr;
   }
 }

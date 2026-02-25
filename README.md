@@ -26,6 +26,7 @@ API em `http://localhost:3080` (`api/server.mjs`):
 - `GET /api/courses`
 - `GET /api/courses/:courseSlug/lessons`
 - `GET /api/auth/me` (role do usuario autenticado)
+- `PUT /api/admin/users/:userId/role` (somente admin)
 - `POST /api/courses/:courseSlug/lessons`
 - `PUT /api/courses/:courseSlug/lessons/:lessonId`
 - `DELETE /api/courses/:courseSlug/lessons/:lessonId`
@@ -57,6 +58,7 @@ Controle de permissao por role usa `publicMetadata.role` no Clerk:
 - `viewer` (ou sem role): somente leitura
 
 Para funcionar, a API precisa de `CLERK_SECRET_KEY` no ambiente e o front envia `Bearer token` nas rotas de escrita.
+Admins tambem podem promover/rebaixar usuarios pela tela "Gerenciar roles de usuario".
 
 - Nunca exponha `CLERK_SECRET_KEY` no front-end.
 - Apenas `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` deve ir para o navegador.
