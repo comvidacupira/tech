@@ -34,61 +34,61 @@ image: /assets/images/windows.jpg
 <hr class="gallery-divider" />
 
 <div class="video-gallery" id="video-gallery">
-  <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 1" data-description="Conhecendo o Windows.">
+  <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 1" data-description="Conhecendo o Windows." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 1 - Conhecendo o Windows" />
     <h3>Aula 1</h3>
     <p>Conhecendo o Windows.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 2" data-description="Explorando a area de trabalho.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 2" data-description="Explorando a area de trabalho." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 2 - Area de trabalho" />
     <h3>Aula 2</h3>
     <p>Explorando a area de trabalho.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 3" data-description="Como criar e organizar pastas.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 3" data-description="Como criar e organizar pastas." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 3 - Pastas e arquivos" />
     <h3>Aula 3</h3>
     <p>Como criar e organizar pastas.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 4" data-description="Configuracoes basicas do sistema.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 4" data-description="Configuracoes basicas do sistema." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 4 - Configuracoes basicas" />
     <h3>Aula 4</h3>
     <p>Configuracoes basicas do sistema.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 5" data-description="Atalhos uteis para produtividade.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 5" data-description="Atalhos uteis para produtividade." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 5 - Atalhos" />
     <h3>Aula 5</h3>
     <p>Atalhos uteis para produtividade.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 6" data-description="Usando o menu iniciar de forma pratica.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 6" data-description="Usando o menu iniciar de forma pratica." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 6 - Menu iniciar" />
     <h3>Aula 6</h3>
     <p>Usando o menu iniciar de forma pratica.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 7" data-description="Pesquisa de apps, arquivos e configuracoes.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 7" data-description="Pesquisa de apps, arquivos e configuracoes." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 7 - Pesquisa" />
     <h3>Aula 7</h3>
     <p>Pesquisa de apps, arquivos e configuracoes.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 8" data-description="Central de notificacoes e ajustes rapidos.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 8" data-description="Central de notificacoes e ajustes rapidos." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 8 - Central de notificacoes" />
     <h3>Aula 8</h3>
     <p>Central de notificacoes e ajustes rapidos.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 9" data-description="Personalizando tema e plano de fundo.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 9" data-description="Personalizando tema e plano de fundo." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 9 - Personalizacao" />
     <h3>Aula 9</h3>
     <p>Personalizando tema e plano de fundo.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 10" data-description="Revisao dos principais recursos do Windows.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 10" data-description="Revisao dos principais recursos do Windows." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 10 - Revisao" />
     <h3>Aula 10</h3>
     <p>Revisao dos principais recursos do Windows.</p>
@@ -99,14 +99,23 @@ image: /assets/images/windows.jpg
   (function () {
     const player = document.getElementById("lesson-player");
     const current = document.getElementById("lesson-current");
-    const cards = document.querySelectorAll(".js-video-card");
+    const allCards = Array.from(document.querySelectorAll(".js-video-card"));
     const courseList = document.getElementById("course-list");
+    const activeCards = allCards.filter(function (card) {
+      return card.dataset.enabled !== "false";
+    });
+
+    allCards.forEach(function (card) {
+      if (card.dataset.enabled === "false") {
+        card.hidden = true;
+      }
+    });
 
     function buildCourseListFromCards() {
       if (!courseList) return;
       courseList.innerHTML = "";
 
-      cards.forEach(function (card) {
+      activeCards.forEach(function (card) {
         const title = card.dataset.title || "Aula";
         const description = card.dataset.description || "";
 
@@ -124,17 +133,24 @@ image: /assets/images/windows.jpg
       player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
       current.textContent = "Reproduzindo: " + title + " - " + description;
 
-      cards.forEach(function (c) {
+      activeCards.forEach(function (c) {
         c.classList.remove("is-active");
       });
       card.classList.add("is-active");
     }
 
-    cards.forEach(function (card) {
+    activeCards.forEach(function (card) {
       card.addEventListener("click", function () {
         playFromCard(card);
       });
     });
+
+    if (activeCards.length > 0) {
+      playFromCard(activeCards[0]);
+    } else {
+      player.src = "";
+      current.textContent = "Nenhuma aula ativa no momento.";
+    }
 
     buildCourseListFromCards();
   })();

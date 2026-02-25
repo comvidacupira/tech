@@ -34,31 +34,31 @@ image: /assets/images/internet.jpg
 <hr class="gallery-divider" />
 
 <div class="video-gallery" id="video-gallery">
-  <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 1" data-description="O que e internet e como funciona.">
+  <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 1" data-description="O que e internet e como funciona." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 1 - O que e internet" />
     <h3>Aula 1</h3>
     <p>O que e internet e como funciona.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 2" data-description="Navegadores e abas no dia a dia.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 2" data-description="Navegadores e abas no dia a dia." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 2 - Navegadores e abas" />
     <h3>Aula 2</h3>
     <p>Navegadores e abas no dia a dia.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 3" data-description="Pesquisa eficiente no Google.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 3" data-description="Pesquisa eficiente no Google." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 3 - Pesquisa eficiente" />
     <h3>Aula 3</h3>
     <p>Pesquisa eficiente no Google.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 4" data-description="Criacao e uso de email.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 4" data-description="Criacao e uso de email." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 4 - Criacao e uso de email" />
     <h3>Aula 4</h3>
     <p>Criacao e uso de email.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 5" data-description="Seguranca digital e golpes comuns.">
+  <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 5" data-description="Seguranca digital e golpes comuns." data-enabled="true">
     <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 5 - Seguranca digital" />
     <h3>Aula 5</h3>
     <p>Seguranca digital e golpes comuns.</p>
@@ -69,14 +69,23 @@ image: /assets/images/internet.jpg
   (function () {
     const player = document.getElementById("lesson-player");
     const current = document.getElementById("lesson-current");
-    const cards = document.querySelectorAll(".js-video-card");
+    const allCards = Array.from(document.querySelectorAll(".js-video-card"));
     const courseList = document.getElementById("course-list");
+    const activeCards = allCards.filter(function (card) {
+      return card.dataset.enabled !== "false";
+    });
+
+    allCards.forEach(function (card) {
+      if (card.dataset.enabled === "false") {
+        card.hidden = true;
+      }
+    });
 
     function buildCourseListFromCards() {
       if (!courseList) return;
       courseList.innerHTML = "";
 
-      cards.forEach(function (card) {
+      activeCards.forEach(function (card) {
         const title = card.dataset.title || "Aula";
         const description = card.dataset.description || "";
 
@@ -94,17 +103,24 @@ image: /assets/images/internet.jpg
       player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
       current.textContent = "Reproduzindo: " + title + " - " + description;
 
-      cards.forEach(function (c) {
+      activeCards.forEach(function (c) {
         c.classList.remove("is-active");
       });
       card.classList.add("is-active");
     }
 
-    cards.forEach(function (card) {
+    activeCards.forEach(function (card) {
       card.addEventListener("click", function () {
         playFromCard(card);
       });
     });
+
+    if (activeCards.length > 0) {
+      playFromCard(activeCards[0]);
+    } else {
+      player.src = "";
+      current.textContent = "Nenhuma aula ativa no momento.";
+    }
 
     buildCourseListFromCards();
   })();

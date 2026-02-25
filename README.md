@@ -22,6 +22,29 @@ Para adicionar uma nova aula, edite a secao `## Aulas` com a lista numerada:
 
 Se quiser, adicione o link da aula em `## Links sugeridos`.
 
+## Ativar/desativar aula (sem banco de dados)
+
+Cada aula na galeria usa um botao com o atributo `data-enabled`.
+
+- Aula ativa:
+  - `data-enabled="true"`
+- Aula desativada:
+  - `data-enabled="false"`
+
+Exemplo:
+
+```html
+<button
+  class="video-card js-video-card"
+  type="button"
+  data-video-id="IldPMbfLb1E"
+  data-title="Aula 2"
+  data-description="Explorando a area de trabalho."
+  data-enabled="false">
+```
+
+Quando uma aula esta com `data-enabled="false"`, ela nao aparece na lista nem na galeria.
+
 Fluxo recomendado:
 
 1. Uma pessoa cria/edita as aulas em Markdown.
