@@ -76,6 +76,7 @@ image: /assets/images/word.jpg
     let isAdminMode = false;
     let currentAdminUserId = null;
     let adminNoteEl = null;
+    let syncNoteEl = null;
     const adminToggleByCard = new Map();
 
     function cardId(card, index) {
@@ -106,6 +107,8 @@ image: /assets/images/word.jpg
       if (!response.ok) {
         throw new Error("Nao foi possivel salvar no banco.");
       }
+
+      clearSyncIssue();
     }
 
     const enabledByCard = new Map();
@@ -128,7 +131,10 @@ image: /assets/images/word.jpg
       if (!apiBase || !courseSlug) return;
 
       const response = await fetch(apiBase + "/api/lessons/status?course=" + encodeURIComponent(courseSlug));
-      if (!response.ok) return;
+      if (!response.ok) {
+        showSyncIssue("Falha ao ler status no banco (API/Turso indisponivel).");
+        return;
+      }
 
       const payload = await response.json();
       if (!payload || !Array.isArray(payload.lessons)) return;
@@ -153,6 +159,7 @@ image: /assets/images/word.jpg
 
       buildCourseListFromCards();
       ensureSelectedPlayable();
+      clearSyncIssue();
     }
 
     function getEnabledCards() {
@@ -243,6 +250,7 @@ image: /assets/images/word.jpg
         buildCourseListFromCards();
         ensureSelectedPlayable();
         writeEnabled(card, index, nextEnabled).catch(function () {
+          showSyncIssue("Falha ao salvar no banco. Verifique API local e credenciais do Turso.");
           enabledByCard.set(card, previousEnabled);
           applyCardState(card, previousEnabled);
           adminToggle.textContent = previousEnabled ? "Desativar" : "Ativar";
@@ -279,6 +287,23 @@ image: /assets/images/word.jpg
       adminNoteEl.className = "admin-mode-note";
       adminNoteEl.textContent = "Modo admin ativo: use o botao em cada aula para ativar ou desativar.";
       title.insertAdjacentElement("afterend", adminNoteEl);
+    }
+
+    function showSyncIssue(message) {
+      const title = document.querySelector(".gallery-title");
+      if (!title) return;
+      if (!syncNoteEl) {
+        syncNoteEl = document.createElement("p");
+        syncNoteEl.className = "admin-sync-note";
+        title.insertAdjacentElement("afterend", syncNoteEl);
+      }
+      syncNoteEl.textContent = message;
+    }
+
+    function clearSyncIssue() {
+      if (!syncNoteEl) return;
+      syncNoteEl.remove();
+      syncNoteEl = null;
     }
 
     function setAdminMode(nextMode) {
