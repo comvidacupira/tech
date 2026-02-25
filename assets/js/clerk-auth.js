@@ -17,6 +17,8 @@
       script.async = true;
       script.crossOrigin = "anonymous";
       script.src = buildClerkScriptUrl(key);
+      script.setAttribute("data-clerk-publishable-key", key);
+      window.__clerk_publishable_key = key;
 
       script.onload = function () {
         initClerk(resolve);
@@ -87,8 +89,9 @@
     try {
       const parts = String(publishableKey).split("_");
       if (parts.length < 3) return null;
-      const encoded = parts.slice(2).join("_").replace(/\$/g, "");
-      return atob(encoded);
+      const encoded = parts.slice(2).join("_");
+      const decoded = atob(encoded);
+      return decoded.replace(/[^a-zA-Z0-9.-]/g, "");
     } catch (error) {
       return null;
     }
