@@ -382,25 +382,30 @@
         return;
       }
 
-      const response = await fetch(
-        apiBase + "/api/courses/" + encodeURIComponent(courseSlug) + "/lessons",
-      );
-      if (!response.ok) {
-        showSyncIssue("Falha ao ler aulas no banco (API/Turso indisponivel).");
+      try {
+        const response = await fetch(
+          apiBase + "/api/courses/" + encodeURIComponent(courseSlug) + "/lessons",
+        );
+        if (!response.ok) {
+          showSyncIssue("Falha ao ler aulas no banco (API/Turso indisponivel).");
+          setCurrentText("Nao foi possivel carregar aulas.");
+          return;
+        }
+
+        const payload = await response.json();
+        lessons = Array.isArray(payload.lessons) ? payload.lessons : [];
+        lessons.sort(function (a, b) {
+          return Number(a.position) - Number(b.position);
+        });
+
+        renderGallery();
+        buildCourseList();
+        ensureSelectedPlayable();
+        clearSyncIssue();
+      } catch (error) {
+        showSyncIssue("Falha de rede ao buscar aulas. Verifique API local e conexao.");
         setCurrentText("Nao foi possivel carregar aulas.");
-        return;
       }
-
-      const payload = await response.json();
-      lessons = Array.isArray(payload.lessons) ? payload.lessons : [];
-      lessons.sort(function (a, b) {
-        return Number(a.position) - Number(b.position);
-      });
-
-      renderGallery();
-      buildCourseList();
-      ensureSelectedPlayable();
-      clearSyncIssue();
     }
 
     loadLessonsFromApi();
