@@ -399,3 +399,14 @@ ol li {
     grid-template-columns: 1fr;
   }
 }
+
+.admin-sync-note {
+  margin: 0.4rem 0 0;
+  color: #8b1f00;
+  background: #ffe8e1;
+  border: 1px solid #f4b9ab;
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.9rem;
+}
+
