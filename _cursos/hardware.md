@@ -35,9 +35,9 @@ image: /assets/images/hardware.jpg
 
 <div class="video-gallery" id="video-gallery">
   <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 1" data-description="Introducao ao hardware.">
-    <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 1 - Introducao ao hardware" />
+    <img src="https://drive.google.com/drive/folders/1oMTrZE8afbXa1wRa95Z49--kRdAKh5lH?usp=sharing" alt="Aula 1 - Introducao ao hardware" />
     <h3>Aula 1</h3>
-    <p>Introducao ao hardware.</p>
+    <p>Introducao ao hardware</p>
   </button>
 
   <button class="video-card js-video-card" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 2" data-description="Componentes principais do computador.">
