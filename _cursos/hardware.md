@@ -41,7 +41,7 @@ image: /assets/images/hardware.jpg
   </button>
 
   <button class="video-card js-video-card" type="button" data-resource-type="link" data-resource-url="/cursos/Inside_the_Machine.pdf" data-title="Aula 2" data-description="Material complementar em PDF.">
-    <img src="/assets/images/material-color.png" alt="Aula 2 - Material complementar em Power Point" />
+    <img src="/assets/images/material-color-16.png" alt="Aula 2 - Material complementar em Power Point" />
     <h3>Aula 2</h3>
     <p>Material complementar em PDF.</p>
   </button>
