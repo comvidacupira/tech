@@ -238,6 +238,13 @@ ol li {
   padding: 0.5rem 0.85rem;
 }
 
+.resource-link-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
 .video-current {
   margin: 0.55rem 0 0;
   color: var(--muted);
@@ -268,6 +275,14 @@ ol li {
   aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
+}
+
+.video-card img.lesson-icon {
+  width: 58px;
+  height: 58px;
+  aspect-ratio: auto;
+  object-fit: contain;
+  margin: 0.7rem auto 0.2rem;
 }
 
 .video-card h3 {

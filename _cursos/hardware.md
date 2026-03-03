@@ -40,26 +40,26 @@ image: /assets/images/hardware.jpg
     <p>Video introdutorio no YouTube.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-resource-type="link" data-resource-url="/cursos/Inside_the_Machine.pdf" data-title="Aula 2" data-description="Material complementar em PDF.">
-    <img src="/assets/images/material-color-16.png" alt="Aula 2 - Material complementar em Power Point" />
+  <button class="video-card js-video-card" type="button" data-resource-type="link" data-resource-url="{{ '/cursos/Inside_the_Machine.pdf' | relative_url }}" data-title="Aula 2" data-description="Material complementar em PDF.">
+    <img class="lesson-icon" src="{{ '/assets/images/material-color-64.png' | relative_url }}" alt="Aula 2 - Material complementar em PDF" />
     <h3>Aula 2</h3>
     <p>Material complementar em PDF.</p>
   </button>
 
   <button class="video-card js-video-card" type="button" data-resource-type="slides" data-resource-url="" data-title="Aula 3" data-description="Apresentacao com placas, processador e memoria RAM.">
-    <img src="/assets/images/hardware.jpg" alt="Aula 3 - Slides de hardware" />
+    <img src="{{ '/assets/images/hardware.jpg' | relative_url }}" alt="Aula 3 - Slides de hardware" />
     <h3>Aula 3</h3>
     <p>Slides da aula.</p>
   </button>
 
   <button class="video-card js-video-card" type="button" data-resource-type="document" data-resource-url="https://docs.google.com/document/d/1anq3P7wqHq7wyGNFWWv9LQyK3f2N4nTw/edit?usp=sharing" data-title="Aula 4" data-description="Guia em documento sobre HD, SSD e boas praticas.">
-    <img src="/assets/images/hardware.jpg" alt="Aula 4 - Documento de apoio" />
+    <img src="{{ '/assets/images/hardware.jpg' | relative_url }}" alt="Aula 4 - Documento de apoio" />
     <h3>Aula 4</h3>
     <p>Documento de apoio.</p>
   </button>
 
   <button class="video-card js-video-card" type="button" data-resource-type="link" data-resource-url="https://www.intel.com/content/www/us/en/gaming/resources/pc-components.html" data-title="Aula 5" data-description="Leitura externa sobre componentes e montagem.">
-    <img src="/assets/images/hardware.jpg" alt="Aula 5 - Link externo" />
+    <img src="{{ '/assets/images/hardware.jpg' | relative_url }}" alt="Aula 5 - Link externo" />
     <h3>Aula 5</h3>
     <p>Link externo complementar.</p>
   </button>

@@ -94,11 +94,19 @@
 
   function renderLink(data) {
     if (!data.resourceUrl) return false;
+    const isPdf = /\.pdf(?:$|[?#])/i.test(data.resourceUrl);
+    const downloadBtn = isPdf
+      ? '<a class="resource-link-btn" href="' +
+        data.resourceUrl +
+        '" download>Baixar PDF</a>'
+      : "";
 
     playerFrame.innerHTML =
-      '<div class="resource-link-box"><p>Este recurso abre em nova aba.</p><a class="resource-link-btn" href="' +
+      '<div class="resource-link-box"><p>Este recurso abre em nova aba.</p><div class="resource-link-actions"><a class="resource-link-btn" href="' +
       data.resourceUrl +
-      '" target="_blank" rel="noopener noreferrer">Abrir recurso</a></div>';
+      '" target="_blank" rel="noopener noreferrer">Abrir recurso</a>' +
+      downloadBtn +
+      "</div></div>";
     return true;
   }
 
