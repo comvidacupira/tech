@@ -34,16 +34,17 @@ image: /assets/images/hardware.jpg
 <hr class="gallery-divider" />
 
 <div class="video-gallery" id="video-gallery">
-  <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 1" data-description="Introducao ao hardware.">
-    <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 1 - Introducao ao hardware" />
-    <h3>Aula 1</h3>
-    <p>Video introdutorio no YouTube.</p>
-  </button>
 
   <button class="video-card js-video-card" type="button" data-resource-type="link" data-resource-url="{{ '/cursos/Inside_the_Machine.pdf' | relative_url }}" data-title="Aula 2" data-description="Material complementar em PDF.">
-    <img class="lesson-icon" src="{{ '/assets/images/material-color-64.png' | relative_url }}" alt="Aula 2 - Material complementar em PDF" />
+    <img class="lesson-icon" src="{{ '/assets/images/material-color-64.png' | relative_url }}" alt="Aula 1 - Material em Slides" />
+    <h3>Aula 1</h3>
+    <p>Material em Slides</p>
+  </button>
+
+   <button class="video-card js-video-card is-active" type="button" data-video-id="IldPMbfLb1E" data-title="Aula 2" data-description="Introducao ao hardware.">
+    <img src="https://img.youtube.com/vi/IldPMbfLb1E/hqdefault.jpg" alt="Aula 1 - Introducao ao hardware" />
     <h3>Aula 2</h3>
-    <p>Material complementar em PDF.</p>
+    <p>Video hardware no YouTube.</p>
   </button>
 
   <button class="video-card js-video-card" type="button" data-resource-type="slides" data-resource-url="" data-title="Aula 3" data-description="Apresentacao com placas, processador e memoria RAM.">
