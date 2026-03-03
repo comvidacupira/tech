@@ -40,7 +40,7 @@ image: /assets/images/hardware.jpg
     <p>Video introdutorio no YouTube.</p>
   </button>
 
-  <button class="video-card js-video-card" type="button" data-resource-type="link" data-resource-url="/cursos/Inside_the_Machine.pdf" data-title="Aula 2" data-description="Material complementar em PDF.">
+  <button class="video-card js-video-card" type="button" data-resource-type="link" data-resource-url="/cursos/materiais/Inside_the_Machine.pdf" data-title="Aula 2" data-description="Material complementar em PDF.">
     <img src="/assets/images/hardware.jpg" alt="Aula 2 - Material complementar em PDF" />
     <h3>Aula 2</h3>
     <p>Material complementar em PDF.</p>
